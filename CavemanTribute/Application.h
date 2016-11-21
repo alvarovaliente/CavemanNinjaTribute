@@ -16,6 +16,7 @@ class MParticle;
 class MScene;
 class MIntro;
 class MGameOver;
+class Player;
 
 
 class Application
@@ -40,6 +41,7 @@ public:
 	MTextures *Ftextures;
 	MAudio *Faudio;
 	MGameObject *FGameObject;
+	Player *FPlayer;
 	MCollision *FCollision;
 	MParticle *FParticle;
 	MScene *scene;

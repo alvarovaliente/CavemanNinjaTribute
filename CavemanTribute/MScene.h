@@ -19,29 +19,23 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	void createLevel();
-	void createPlayerAndEnemies(int level);
 
 	//graphics
 	SDL_Texture* background = nullptr;
 	SDL_Texture* graphicsPlayer = nullptr;
-	SDL_Texture* top = nullptr;
-	SDL_Rect headIcon;
-	SDL_Rect numberZero;
-	SDL_Rect numberOne;
-	SDL_Rect numberTwo;
+	SDL_Texture* sky = nullptr;
+	SDL_Texture* mountains = nullptr;
+	SDL_Texture* trees = nullptr;
+	SDL_Texture* facePlayer = nullptr;
+	SDL_Texture* lifePlayer = nullptr;
 
-	//timers
-	Timer timeChangeLevel;
-	Timer timeGameOver;
-	Timer timeEndGame;
+	SDL_Rect faceUInormal;
 
-	//variables
-	int nEnemiesLeft;
-	int nPlayerLives;
-	int nLevel;
-	bool levelOneDone;
-	bool levelTwoDone;
+	SDL_Rect lifeGreen;
+	SDL_Rect lifeYellow;
+	SDL_Rect lifeRed;
+	SDL_Rect lifeBlank;
+
 	bool pause;
 
 };

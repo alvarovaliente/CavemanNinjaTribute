@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Globals.h"
+#include "Module.h"
 //#include "MGameObject.h"
 
 using namespace std;
@@ -49,7 +50,7 @@ enum DIRECTION
 class Collider;
 
 
-class GameObject
+class GameObject : public Module
 {
 
 public:

@@ -119,6 +119,7 @@ bool MAudio::PlayMusic(const char* path, float fade_time)
 	return ret;
 }
 
+
 // Load WAV
 unsigned int MAudio::LoadFx(const char* path)
 {

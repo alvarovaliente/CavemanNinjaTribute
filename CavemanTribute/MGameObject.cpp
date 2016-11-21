@@ -187,7 +187,7 @@ void MGameObject::createGameObject(infoGameObject info, GAMEOBJECT_TYPE type, CO
 	{
 	case PLAYER:
 	{
-		Player* player = new Player(info);
+		Player* player = new Player();
 
 		if (collider_type != COLLIDER_NONE)
 		{

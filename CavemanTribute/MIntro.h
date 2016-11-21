@@ -4,9 +4,6 @@
 #include "Globals.h"
 #include "Player.h"
 
-
-class Collider;
-
 class MIntro : public Module
 {
 public:
@@ -20,12 +17,11 @@ public:
 
 	//graphics
 	SDL_Texture* background = nullptr;
-	//SDL_Texture* start = nullptr;
+
+	//Audio
+	unsigned int introFx;
 
 	//timers
 	Timer timeStart;
-
-	unsigned int introFx;
-	//unsigned int startFx;
 
 };
