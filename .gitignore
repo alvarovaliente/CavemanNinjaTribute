@@ -1,10 +1,10 @@
 ## Ignore personales
 
 #SDL
-SDL2/
-SDL2_mixer/
-SDL2_image/
-SDL2_ttf/
+SDL/
+SDL_mixer/
+SDL_image/
+SDL_ttf/
 
 
 ## Ignore Visual Studio temporary files, build results, and
