@@ -13,15 +13,13 @@ enum PLAYER_STATUS
 {
 	PLAYER_IDLE = 1,
 	PLAYER_WALKING,
+	PLAYER_CROUCH,
+	PLAYER_LOOKUP,
 	PLAYER_JUMPING,
-	PLAYER_SHOOTING,
-	PLAYER_FALLING,
 	PLAYER_DYING
 
 
 };
-
-class Collider;
 
 class Player : public GameObject
 {
@@ -38,15 +36,19 @@ public:
 	//Behaviour methods
 	update_status walkingRightF();
 	update_status walkingLeftF();
+	update_status crouchF();
+	update_status standUpF();
+	update_status lookUpF();
+	update_status lookNormalF();
 
 	//Textures
 	SDL_Texture *graphicsPlayer = nullptr;
 
 	//Animations
-	Animation idleRight;
-	Animation idleLeft;
-	Animation walkingRight;
-	Animation walkingLeft;
+	Animation idle;
+	Animation walking;
+	Animation crouch;
+	Animation lookUp;
 
 	//Status
 	PLAYER_STATUS status;

@@ -20,6 +20,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+
 	//graphics
 	SDL_Texture* background = nullptr;
 	SDL_Texture* graphicsPlayer = nullptr;
@@ -35,6 +36,10 @@ public:
 	SDL_Rect lifeYellow;
 	SDL_Rect lifeRed;
 	SDL_Rect lifeBlank;
+
+
+	//Player
+	Player *player;
 
 	bool pause;
 

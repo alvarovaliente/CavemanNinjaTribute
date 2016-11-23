@@ -100,6 +100,7 @@
     <ClCompile Include="MInput.cpp" />
     <ClCompile Include="MIntro.cpp" />
     <ClCompile Include="MParticle.cpp" />
+    <ClCompile Include="MPlayer.cpp" />
     <ClCompile Include="MRender.cpp" />
     <ClCompile Include="MScene.cpp" />
     <ClCompile Include="MTextures.cpp" />

@@ -10,7 +10,7 @@
 #include "MScene.h"
 #include "MIntro.h"
 #include "MGameOver.h"
-#include "Player.h"
+
 
 using namespace std;
 
@@ -28,8 +28,6 @@ Application::Application()
 	modules.push_back(gameover = new MGameOver(false));
 	modules.push_back(FGameObject = new MGameObject());
 	modules.push_back(FParticle = new MParticle());
-
-	modules.push_back(FPlayer = new Player());
 
 	modules.push_back(FCollision = new MCollision());
 

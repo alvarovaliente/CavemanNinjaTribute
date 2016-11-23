@@ -73,6 +73,19 @@ bool MScene::Start()
 
 
 	App->Faudio->PlayMusic("Audio/Music/background.ogg", 1.0f);
+
+	infoGameObject infPlayer;
+
+	infPlayer.position = { 30, 180 };
+
+	App->FGameObject->createGameObject(infPlayer, PLAYER, COLLIDER_PLAYER);
+
+	player = dynamic_cast<Player*> (App->FGameObject->returnPlayer());
+
+	player->position.x = infPlayer.position.x;
+	player->position.y = infPlayer.position.y;
+
+
 	
 	pause = false;
 	return true;
@@ -98,49 +111,49 @@ bool MScene::CleanUp()
 update_status MScene::Update()
 {
 		//SKY
-		App->renderer->Blit(sky, 0, 0, NULL);
-		App->renderer->Blit(sky, 256, 0, NULL);
-		App->renderer->Blit(sky, 512, 0, NULL);
-		App->renderer->Blit(sky, 768, 0, NULL);
-		App->renderer->Blit(sky, 1024, 0, NULL);
+		App->renderer->Blit(sky, 0, 0,NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(sky, 256, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(sky, 512, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(sky, 768, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(sky, 1024, 0, NULL, SDL_FLIP_NONE);
 
 		//MOUNTAINS
-		App->renderer->Blit(mountains, 0, 0, NULL);
-		App->renderer->Blit(mountains, 256, 0, NULL);
-		App->renderer->Blit(mountains, 513, 0, NULL);
-		App->renderer->Blit(mountains, 768, 0, NULL);
-		App->renderer->Blit(mountains, 1024, 0, NULL);
+		App->renderer->Blit(mountains, 0, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(mountains, 256, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(mountains, 513, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(mountains, 768, 0, NULL, SDL_FLIP_NONE);
+		App->renderer->Blit(mountains, 1024, 0, NULL, SDL_FLIP_NONE);
 
 		//TREES
-		App->renderer->Blit(trees, 0, 0, NULL);
+		App->renderer->Blit(trees, 0, 0, NULL, SDL_FLIP_NONE);
 
 		//LEVEL SPRITE
-		App->renderer->Blit(background, 0, 0, NULL);
+		App->renderer->Blit(background, 0, 0, NULL, SDL_FLIP_NONE);
 
 		//FACE
-		App->renderer->Blit(facePlayer, 1, 1, &faceUInormal);
+		App->renderer->Blit(facePlayer, 1, 1, &faceUInormal, SDL_FLIP_NONE);
 
 		//LIFE
-		for (int i = 0; i < App->FPlayer->life.size();i++)
+		for (int i = 0; i < player->life.size();i++)
 		{
-			if (App->FPlayer->life[i] == 1)
+			if (player->life[i] == 1)
 			{ 
-				if (App->FPlayer->actualLife >= 15) //green life
+				if (player->actualLife >= 15) //green life
 				{
-					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeGreen);
+					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeGreen, SDL_FLIP_NONE);
 				}
-				else if (App->FPlayer->actualLife < 15 && App->FPlayer->actualLife > 5) //yellow life
+				else if (player->actualLife < 15 && player->actualLife > 5) //yellow life
 				{
-					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeYellow);
+					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeYellow, SDL_FLIP_NONE);
 				}
 				else //red life
 				{
-					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeRed);
+					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeRed, SDL_FLIP_NONE);
 				}
 			}
-			else if (App->FPlayer->life[i] == 0)
+			else if (player->life[i] == 0)
 			{
-				App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeBlank);
+				App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeBlank, SDL_FLIP_NONE);
 			}
 		}
 	

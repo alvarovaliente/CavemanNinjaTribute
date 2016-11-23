@@ -47,7 +47,7 @@ bool MGameOver::CleanUp()
 update_status MGameOver::Update()
 {
 
-	App->renderer->Blit(background, 0, 0, NULL);
+	App->renderer->Blit(background, 0, 0, NULL,SDL_FLIP_NONE);
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{

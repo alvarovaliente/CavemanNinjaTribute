@@ -48,12 +48,5 @@ void GameObject::OnCollision(Collider* c1, Collider* c2)
 
 }
 
-void GameObject::roll(DIRECTION dir){}
-
-void GameObject::die(){}
-
-void GameObject::stopRolling(){}
-
-void GameObject::fly(){}
 
 

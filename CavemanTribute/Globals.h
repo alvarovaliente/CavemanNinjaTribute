@@ -2,6 +2,7 @@
 #define __GLOBALS_H__
 
 #include "SDL/include/SDL_rect.h"
+#include "SDL/include/SDL.h"
 
 typedef unsigned int uint;
 typedef unsigned char uchar;
@@ -45,10 +46,10 @@ enum update_status
 #define SCREEN_HEIGHT 240
 #define TILE_WIDTH 20
 #define TILE_HEIGHT 20
-#define PLAYER_COLLIDER_BODY_HEIGHT 35
-#define PLAYER_COLLIDER_BODY_WIDTH 22
-#define PLAYER_COLLIDER_FOOT_HEIGHT 2
-#define PLAYER_COLLIDER_FOOT_WIDTH 22
+#define PLAYER_COLLIDER_BODY_HEIGHT 47
+#define PLAYER_CROUCH_COLLIDER_BODY_HEIGHT 33
+#define PLAYER_COLLIDER_BODY_WIDTH 27
+
 #define PLAYER_JUMP_TIME 350
 #define PLAYER_FLYING_TIME 4000
 #define PLAYER_NORMAL_SPEED 1
@@ -66,6 +67,6 @@ enum update_status
 #define SCREEN_SIZE 3
 #define FULLSCREEN false
 #define VSYNC true
-#define TITLE "Snow Bros"
+#define TITLE "Caveman Ninja"
 
 #endif //__GLOBALS_H__
