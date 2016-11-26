@@ -17,7 +17,9 @@ enum PLAYER_STATUS
 	PLAYER_LOOKUP,
 	PLAYER_JUMP,
 	PLAYER_FALLING,
-	PLAYER_DYING
+	PLAYER_DYING,
+	PLAYER_DOUBLEJUMP,
+	PLAYER_SHOOT
 
 
 };
@@ -43,6 +45,7 @@ public:
 	update_status lookUpF();
 	update_status lookNormalF();
 	update_status jumpF();
+	update_status doubleJumpF();
 
 	//Textures
 	SDL_Texture *graphicsPlayer = nullptr;
@@ -53,6 +56,9 @@ public:
 	Animation crouch;
 	Animation lookUp;
 	Animation jump;
+	Animation doubleJump;
+	Animation falling;
+	Animation shoot;
 
 	//Status
 	PLAYER_STATUS status;
@@ -71,6 +77,8 @@ public:
 
 	//timers
 	Timer timeJump;
+	Timer timeDoubleJump;
+	Timer timeShoot;
 };
 
 

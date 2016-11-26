@@ -43,7 +43,7 @@ Player::Player()
 	walking.frames.push_back({ 304, 80, 33, 47 });
 	walking.frames.push_back({ 434, 83, 27, 44 });
 	walking.frames.push_back({ 46, 208, 40, 47 });
-	walking.speed = 0.1f;
+	walking.speed = 0.12f;
 
 	//crouch
 	crouch.frames.push_back({ 180, 606, 30, 33 });
@@ -55,9 +55,35 @@ Player::Player()
 
 	//jump
 	jump.frames.push_back({ 178, 205, 31, 50 });
+	jump.frames.push_back({ 178, 205, 31, 50 });
+	jump.frames.push_back({ 301, 205, 38, 45 });
+	jump.frames.push_back({ 301, 205, 38, 45 });
 	jump.frames.push_back({ 301, 205, 38, 45 });
 	jump.frames.push_back({ 434, 205, 27, 48 });
+	jump.frames.push_back({ 434, 205, 27, 48 });
+	jump.frames.push_back({ 434, 205, 27, 48 });
 	jump.speed = 0.1f;
+
+	//falling
+	falling.frames.push_back({ 434, 205, 27, 48 });
+	falling.speed = 0.1f;
+
+	//double jump
+	doubleJump.frames.push_back({ 52, 336, 24, 40 });
+	doubleJump.frames.push_back({ 174, 338, 38, 38 });
+	doubleJump.frames.push_back({ 306, 347, 34, 26 });
+	doubleJump.frames.push_back({ 430, 342, 38, 38 });
+	doubleJump.frames.push_back({ 53, 464, 24, 40 });
+	doubleJump.frames.push_back({ 176, 464, 32, 41 });
+	doubleJump.frames.push_back({ 300, 470, 35, 24 });
+	doubleJump.frames.push_back({ 428, 464, 38, 38 });
+	doubleJump.speed = 0.25f;
+
+	//shoot
+	shoot.frames.push_back({ 553, 81, 35, 46 });
+	shoot.frames.push_back({ 691, 84, 40, 43 });
+	shoot.speed = 0.1f;
+
 
 }
 
@@ -113,14 +139,25 @@ update_status Player::PreUpdate()
 				case PLAYER_FALLING:
 					LOG("FALLING");
 					break;
-				case PLAYER_DYING:
-					LOG("DYING");
+				case PLAYER_DOUBLEJUMP:
+					LOG("DOUBLE JUMP");
 					break;
 				default:
 					break;
 				}
 
-				if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() <= 300)
+
+				//NORMAL JUMP
+
+				//if its almost in the top point doing up and down we reduce the gravity for an smooth effect
+				if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() >= 400)
+				{
+					gravity = GRAVITY_SMOOTH;
+				
+				}
+
+				//its going up normal jump
+				if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() <= 500)
 				{	
 					position.y -= gravity;
 					grounded = false;
@@ -139,17 +176,79 @@ update_status Player::PreUpdate()
 
 
 				}
-				else if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() >= 200)
+				else if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() >= 500)
 				{
 					status = PLAYER_FALLING;
 					previousStatus = PLAYER_JUMP;
-					timeJump.stop();
 				}
 		
+				//DOUBLE JUMP
 
-
-				if (status == PLAYER_FALLING || status == PLAYER_IDLE)
+				//if its almost in the top point doing up and down we reduce the gravity for an smooth effect
+				if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() >= 400)
 				{
+					gravity = GRAVITY_SMOOTH;
+
+				}
+
+				//its going up double jump
+				if (status == PLAYER_DOUBLEJUMP && timeDoubleJump.isStarted() && timeDoubleJump.getTicks() <= 500)
+				{
+					position.y -= gravity;
+					grounded = false;
+
+					//if while are double jumping we press the walking right button
+					if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
+					{
+						walkingRightF();
+					}
+
+					//if while are double jumping we press the walking left button
+					if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
+					{
+						walkingLeftF();
+					}
+
+
+				}
+				else if (status == PLAYER_DOUBLEJUMP && timeDoubleJump.isStarted() && timeDoubleJump.getTicks() >= 500 && timeDoubleJump.getTicks() <= 700)
+				{
+					position.y += gravity;
+
+					//if while are double jumping we press the walking right button
+					if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
+					{
+						walkingRightF();
+					}
+
+					//if while are double jumping we press the walking left button
+					if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
+					{
+						walkingLeftF();
+					}
+				}
+				else if (status == PLAYER_DOUBLEJUMP && timeDoubleJump.isStarted() && timeDoubleJump.getTicks() >= 700)
+				{
+					status = PLAYER_FALLING;
+					previousStatus = PLAYER_DOUBLEJUMP;
+				}
+
+
+				//FALLING
+
+				if (status == PLAYER_FALLING || status == PLAYER_IDLE || status == PLAYER_SHOOT)
+				{
+
+					if (timeJump.getTicks() >= 600)
+					{
+						gravity = GRAVITY +0.5;
+					}
+
+					if (timeDoubleJump.getTicks() >= 700)
+					{
+						gravity = GRAVITY + 0.7;
+					}
+
 					if (!grounded){
 
 						//if while are falling we press the walking right button
@@ -172,6 +271,24 @@ update_status Player::PreUpdate()
 				if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
 				{
 
+					//DOUBLE JUMP inside walking right
+					if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+					{
+						if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
+						{
+							status = PLAYER_DOUBLEJUMP;
+							previousStatus = PLAYER_LOOKUP;
+							doubleJumpF();
+						}
+						else if (!jumping){
+							status = PLAYER_WALKING;
+							previousStatus = PLAYER_DOUBLEJUMP;
+						
+						}
+					}
+
+
+					//NORMAL JUMP inside walking right
 					if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
 					{
 						status = PLAYER_JUMP;
@@ -181,7 +298,7 @@ update_status Player::PreUpdate()
 					else if (!jumping)
 					{
 						status = PLAYER_WALKING;
-						previousStatus = PLAYER_IDLE;
+						previousStatus = PLAYER_JUMP;
 						walkingRightF();
 					}
 
@@ -193,6 +310,24 @@ update_status Player::PreUpdate()
 				//walking left
 				if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
 				{
+					//DOUBLE JUMP inside walking right
+					if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+					{
+						if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
+						{
+							status = PLAYER_DOUBLEJUMP;
+							previousStatus = PLAYER_WALKING;
+							doubleJumpF();
+						}
+						else if (!jumping){
+							status = PLAYER_WALKING;
+							previousStatus = PLAYER_DOUBLEJUMP;
+
+						}
+					}
+
+
+					//NORMAL JUMP inside walking right
 					if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
 					{
 						status = PLAYER_JUMP;
@@ -202,7 +337,7 @@ update_status Player::PreUpdate()
 					else if (!jumping)
 					{
 						status = PLAYER_WALKING;
-						previousStatus = PLAYER_IDLE;
+						previousStatus = PLAYER_JUMP;
 						walkingLeftF();
 					}
 				}
@@ -222,7 +357,7 @@ update_status Player::PreUpdate()
 				}
 
 				//crouch
-				if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+				if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && status != PLAYER_JUMP && status != PLAYER_FALLING) 
 				{
 					
 					status = PLAYER_CROUCH;
@@ -247,25 +382,31 @@ update_status Player::PreUpdate()
 				}
 
 				//lookUp
-				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 				{
-					status = PLAYER_LOOKUP;
-					previousStatus = PLAYER_IDLE;
-					lookUpF();
+					if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
+					{
+						status = PLAYER_DOUBLEJUMP;
+						previousStatus = PLAYER_LOOKUP;
+						doubleJumpF();
+					}
+					else if (!jumping && status != PLAYER_WALKING){
+						status = PLAYER_LOOKUP;
+						previousStatus = PLAYER_DOUBLEJUMP;
+					
+					}
 				}
 
 				//look normal right
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE && status == PLAYER_LOOKUP && facingRight == true)
 				{
-					lookNormalF();
 					status = PLAYER_IDLE;
 					previousStatus = PLAYER_LOOKUP;
 				}
 
 				//look normal left
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE && status == PLAYER_LOOKUP && facingRight == false)
-				{
-					lookNormalF();
+				{			
 					status = PLAYER_IDLE;
 					previousStatus = PLAYER_LOOKUP;
 				}
@@ -277,7 +418,22 @@ update_status Player::PreUpdate()
 					previousStatus = PLAYER_IDLE;
 					jumpF();
 				}
-				
+
+				//SHOOT
+				if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
+				{
+					timeShoot.start();
+					status = PLAYER_SHOOT;
+					previousStatus = PLAYER_IDLE;
+				}
+
+				if (timeShoot.isStarted() && timeShoot.getTicks() >= 200)
+				{
+					status = PLAYER_IDLE;
+					previousStatus = PLAYER_SHOOT;
+					shoot.Reset();
+					timeShoot.stop();
+				}
 
 				return UPDATE_CONTINUE;
 			}
@@ -296,6 +452,7 @@ update_status Player::Update()
 		
 		switch (status)
 		{
+
 		case PLAYER_IDLE:
 		{
 			if (facingRight)
@@ -308,15 +465,17 @@ update_status Player::Update()
 			}
 		}
 
+		break;
+
 		case PLAYER_FALLING:
 		{
 			if (facingRight)
 			{
-				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(idle.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(falling.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
 			}
 			else
 			{
-				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(idle.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(falling.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
 			}
 		}
 
@@ -377,6 +536,34 @@ update_status Player::Update()
 
 		break;
 
+		case PLAYER_DOUBLEJUMP:
+		{
+			if (facingRight)
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(doubleJump.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(doubleJump.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+			}
+		}
+
+		break;
+
+		case PLAYER_SHOOT:
+		{
+			if (facingRight)
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shoot.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shoot.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+			}
+		}
+
+		break;
+
 		default:
 			break;
 		}
@@ -423,25 +610,24 @@ update_status Player::standUpF()
 	return UPDATE_CONTINUE;
 }
 
-update_status Player::lookUpF()
-{
-
-	position.y += 1;
-	return UPDATE_CONTINUE;
-}
-
-update_status Player::lookNormalF()
-{
-	position.y -= 1;
-	return UPDATE_CONTINUE;
-
-}
 
 update_status Player::jumpF()
 {
 	timeJump.start();
+	position.y -= 15;
 	jumping = true;
 	grounded = false;
+	gravity = GRAVITY;
+	return UPDATE_CONTINUE;
+}
+
+update_status Player::doubleJumpF()
+{
+	timeDoubleJump.start();
+	position.y -= 40;
+	jumping = true;
+	grounded = false;
+	gravity = GRAVITY;
 	return UPDATE_CONTINUE;
 }
 
@@ -467,6 +653,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 
 		if (status == PLAYER_FALLING)
 		{
+			jump.Reset();
 			status = PLAYER_IDLE;
 			previousStatus = PLAYER_FALLING;
 			jumping = false;
