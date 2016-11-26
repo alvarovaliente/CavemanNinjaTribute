@@ -76,7 +76,7 @@ bool MScene::Start()
 
 	infoGameObject infPlayer;
 
-	infPlayer.position = { 30, 180 };
+	infPlayer.position = { 30, 160 };
 
 	App->FGameObject->createGameObject(infPlayer, PLAYER, COLLIDER_PLAYER);
 
@@ -85,7 +85,8 @@ bool MScene::Start()
 	player->position.x = infPlayer.position.x;
 	player->position.y = infPlayer.position.y;
 
-
+	//GROUND WALL
+	App->FCollision->AddCollider({ 0, SCREEN_HEIGHT - 15, SCREEN_WIDTH, 20 }, COLLIDER_GROUND, this);
 	
 	pause = false;
 	return true;

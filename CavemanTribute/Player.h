@@ -15,7 +15,8 @@ enum PLAYER_STATUS
 	PLAYER_WALKING,
 	PLAYER_CROUCH,
 	PLAYER_LOOKUP,
-	PLAYER_JUMPING,
+	PLAYER_JUMP,
+	PLAYER_FALLING,
 	PLAYER_DYING
 
 
@@ -32,6 +33,7 @@ public:
 	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
+	void OnCollision(Collider* c1, Collider* c2);
 
 	//Behaviour methods
 	update_status walkingRightF();
@@ -40,6 +42,7 @@ public:
 	update_status standUpF();
 	update_status lookUpF();
 	update_status lookNormalF();
+	update_status jumpF();
 
 	//Textures
 	SDL_Texture *graphicsPlayer = nullptr;
@@ -49,6 +52,7 @@ public:
 	Animation walking;
 	Animation crouch;
 	Animation lookUp;
+	Animation jump;
 
 	//Status
 	PLAYER_STATUS status;
@@ -60,7 +64,13 @@ public:
 	iPoint speed;
 	vector <int> life;
 	int actualLife;
+	int gravity;
+	bool grounded;
+	bool jumping;
+	
 
+	//timers
+	Timer timeJump;
 };
 
 

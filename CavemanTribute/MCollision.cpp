@@ -16,19 +16,19 @@ MCollision::MCollision() : Module()
 
 	// Matrix is game specific, change it to adapt to your own needs
 	// ... think of moving this outside ModuleCollision
-	matrix[COLLIDER_WALL][COLLIDER_WALL] = false;
-	matrix[COLLIDER_WALL][COLLIDER_PLAYER] = true;
-	matrix[COLLIDER_WALL][COLLIDER_ENEMY] = true;
-	matrix[COLLIDER_WALL][COLLIDER_PLAYER_SOFT_SHOT] = true;
-	matrix[COLLIDER_WALL][COLLIDER_PLAYER_HARD_SHOT] = true;
-	matrix[COLLIDER_WALL][COLLIDER_PLATFORM] = false;
+	matrix[COLLIDER_GROUND][COLLIDER_GROUND] = false;
+	matrix[COLLIDER_GROUND][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_GROUND][COLLIDER_ENEMY] = true;
+	matrix[COLLIDER_GROUND][COLLIDER_PLAYER_SOFT_SHOT] = true;
+	matrix[COLLIDER_GROUND][COLLIDER_PLAYER_HARD_SHOT] = true;
+	matrix[COLLIDER_GROUND][COLLIDER_PLATFORM] = false;
 
-
-	matrix[COLLIDER_PLATFORM][COLLIDER_WALL] = false;
 
 	
 
-	matrix[COLLIDER_PLAYER][COLLIDER_WALL] = true;
+	
+
+	matrix[COLLIDER_PLAYER][COLLIDER_GROUND] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER_SOFT_SHOT] = false;
@@ -47,7 +47,7 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_FOOT][COLLIDER_PLATFORM] = true;
 	matrix[COLLIDER_FOOT][COLLIDER_PLATFORM_SPEC] = true;
 
-	matrix[COLLIDER_ENEMY][COLLIDER_WALL] = true;
+	matrix[COLLIDER_ENEMY][COLLIDER_GROUND] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLAYER_SOFT_SHOT] = true;
@@ -57,19 +57,6 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_ENEMY][COLLIDER_PLATFORM_BORDER_RIGHT] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLATFORM_BORDER_LEFT_SPEC] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLATFORM_BORDER_RIGHT_SPEC] = true;
-	
-
-	matrix[COLLIDER_PLAYER_SOFT_SHOT][COLLIDER_WALL] = true;
-	matrix[COLLIDER_PLAYER_SOFT_SHOT][COLLIDER_PLAYER] = false;
-	matrix[COLLIDER_PLAYER_SOFT_SHOT][COLLIDER_ENEMY] = true;
-	matrix[COLLIDER_PLAYER_SOFT_SHOT][COLLIDER_PLAYER_SOFT_SHOT] = false;
-
-	matrix[COLLIDER_PLAYER_HARD_SHOT][COLLIDER_WALL] = true;
-	matrix[COLLIDER_PLAYER_HARD_SHOT][COLLIDER_PLAYER] = false;
-	matrix[COLLIDER_PLAYER_HARD_SHOT][COLLIDER_ENEMY] = true;
-	matrix[COLLIDER_PLAYER_HARD_SHOT][COLLIDER_PLAYER_HARD_SHOT] = false;
-
-
 	
 
 	
@@ -147,7 +134,7 @@ update_status MCollision::PostUpdate()
 			case COLLIDER_NONE:
 				App->renderer->DrawQuad(col->rect, 255, 255, 255, alpha);
 				break;
-			case COLLIDER_WALL:
+			case COLLIDER_GROUND:
 				App->renderer->DrawQuad(col->rect, 0, 0, 255, alpha);
 				break;
 			case COLLIDER_PLATFORM:

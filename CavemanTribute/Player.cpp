@@ -24,7 +24,13 @@ Player::Player()
 
 	actualLife = 18;
 
+	gravity = 2;
+
 	facingRight = true;
+
+	grounded = false;
+	jumping = false;
+
 
 	//Animations
 
@@ -47,7 +53,11 @@ Player::Player()
 	lookUp.frames.push_back({ 50, 594, 27, 45 });
 	lookUp.speed = 0.2f;
 
-
+	//jump
+	jump.frames.push_back({ 178, 205, 31, 50 });
+	jump.frames.push_back({ 301, 205, 38, 45 });
+	jump.frames.push_back({ 434, 205, 27, 48 });
+	jump.speed = 0.1f;
 
 }
 
@@ -78,15 +88,104 @@ update_status Player::PreUpdate()
 	while (!App->scene->pause)
 	{
 		
+			
 			//Main state machine loop
 			if (status != PLAYER_DYING)
 			{
+
+				switch (status)
+				{
+				case PLAYER_IDLE:
+					LOG("IDLE");
+					break;
+				case PLAYER_WALKING:
+					LOG("WALKING");
+					break;
+				case PLAYER_CROUCH:
+					LOG("CROUCH");
+					break;
+				case PLAYER_LOOKUP:
+					LOG("LOOKUP");
+					break;
+				case PLAYER_JUMP:
+					LOG("JUMP");
+					break;
+				case PLAYER_FALLING:
+					LOG("FALLING");
+					break;
+				case PLAYER_DYING:
+					LOG("DYING");
+					break;
+				default:
+					break;
+				}
+
+				if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() <= 300)
+				{	
+					position.y -= gravity;
+					grounded = false;
+
+					//if while are jumping we press the walking right button
+					if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
+					{
+						walkingRightF();
+					}
+
+					//if while are jumping we press the walking left button
+					if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
+					{
+						walkingLeftF();
+					}
+
+
+				}
+				else if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() >= 200)
+				{
+					status = PLAYER_FALLING;
+					previousStatus = PLAYER_JUMP;
+					timeJump.stop();
+				}
+		
+
+
+				if (status == PLAYER_FALLING || status == PLAYER_IDLE)
+				{
+					if (!grounded){
+
+						//if while are falling we press the walking right button
+						if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
+						{
+							walkingRightF();
+						}
+
+						//if while are falling we press the walking left button
+						if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
+						{
+							walkingLeftF();
+						}
+
+						position.y += gravity;
+					}
+				}
+
 				//walking right
 				if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
 				{
-					status = PLAYER_WALKING;
-					previousStatus = PLAYER_IDLE;
-					walkingRightF();
+
+					if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
+					{
+						status = PLAYER_JUMP;
+						previousStatus = PLAYER_WALKING;
+						jumpF();
+					}
+					else if (!jumping)
+					{
+						status = PLAYER_WALKING;
+						previousStatus = PLAYER_IDLE;
+						walkingRightF();
+					}
+
+				
 
 				}
 				
@@ -94,9 +193,18 @@ update_status Player::PreUpdate()
 				//walking left
 				if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
 				{
-					status = PLAYER_WALKING;
-					previousStatus = PLAYER_IDLE;
-					walkingLeftF();
+					if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
+					{
+						status = PLAYER_JUMP;
+						previousStatus = PLAYER_WALKING;
+						jumpF();
+					}
+					else if (!jumping)
+					{
+						status = PLAYER_WALKING;
+						previousStatus = PLAYER_IDLE;
+						walkingLeftF();
+					}
 				}
 
 				//idle right
@@ -161,6 +269,14 @@ update_status Player::PreUpdate()
 					status = PLAYER_IDLE;
 					previousStatus = PLAYER_LOOKUP;
 				}
+
+				//jump
+				if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping && status != PLAYER_CROUCH)
+				{
+					status = PLAYER_JUMP;
+					previousStatus = PLAYER_IDLE;
+					jumpF();
+				}
 				
 
 				return UPDATE_CONTINUE;
@@ -181,6 +297,18 @@ update_status Player::Update()
 		switch (status)
 		{
 		case PLAYER_IDLE:
+		{
+			if (facingRight)
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(idle.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(idle.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+			}
+		}
+
+		case PLAYER_FALLING:
 		{
 			if (facingRight)
 			{
@@ -230,6 +358,20 @@ update_status Player::Update()
 			else
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(lookUp.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+			}
+		}
+
+		break;
+
+		case PLAYER_JUMP:
+		{
+			if (facingRight)
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(jump.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(jump.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
 			}
 		}
 
@@ -295,6 +437,14 @@ update_status Player::lookNormalF()
 
 }
 
+update_status Player::jumpF()
+{
+	timeJump.start();
+	jumping = true;
+	grounded = false;
+	return UPDATE_CONTINUE;
+}
+
 
 
 bool Player::CleanUp()
@@ -303,4 +453,30 @@ bool Player::CleanUp()
 	
 
 	return true;
+}
+
+void Player::OnCollision(Collider* c1, Collider* c2)
+{
+
+	switch (c2->type)
+	{
+
+	case COLLIDER_GROUND:
+	{
+		grounded = true;
+
+		if (status == PLAYER_FALLING)
+		{
+			status = PLAYER_IDLE;
+			previousStatus = PLAYER_FALLING;
+			jumping = false;
+		}
+		
+	}
+	break;
+
+	default:
+
+		break;
+	}
 }
