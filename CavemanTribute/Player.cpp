@@ -50,7 +50,7 @@ Player::Player()
 	crouch.speed = 0.2f;
 
 	//lookup
-	lookUp.frames.push_back({ 50, 594, 27, 45 });
+	lookUp.frames.push_back({ 50, 593, 27, 46 });
 	lookUp.speed = 0.2f;
 
 	//jump
@@ -82,8 +82,29 @@ Player::Player()
 	//shoot
 	shoot.frames.push_back({ 553, 81, 35, 46 });
 	shoot.frames.push_back({ 691, 84, 40, 43 });
+	shoot.frames.push_back({ 553, 81, 35, 46 });
 	shoot.speed = 0.1f;
 
+	//shoot look up
+	shootLookUp.frames.push_back({ 552, 594, 47, 45 });
+	shootLookUp.frames.push_back({ 692, 583, 27, 56 });
+	shootLookUp.frames.push_back({ 552, 594, 47, 45 });
+
+	shootLookUp.speed = 0.1f;
+
+
+	//shoot crouch
+	shootCrouch.frames.push_back({ 304, 606, 34, 33 });
+	shootCrouch.frames.push_back({ 304, 606, 34, 33 });
+
+	shootCrouch.frames.push_back({ 436, 606, 35, 33 });
+	shootCrouch.frames.push_back({ 436, 606, 35, 33 });
+	shootCrouch.frames.push_back({ 436, 606, 35, 33 });
+	shootCrouch.frames.push_back({ 436, 606, 35, 33 });
+
+	shootCrouch.frames.push_back({ 304, 606, 34, 33 });
+	shootCrouch.frames.push_back({ 304, 606, 34, 33 });
+	shootCrouch.speed = 0.3f;
 
 }
 
@@ -106,6 +127,10 @@ bool Player::Start()
 		life[i] = 0;
 	}
 
+	timeJump.stop();
+	timeDoubleJump.stop();
+	timeShoot.stop();
+
 	return true;
 }
 
@@ -119,34 +144,7 @@ update_status Player::PreUpdate()
 			if (status != PLAYER_DYING)
 			{
 
-				switch (status)
-				{
-				case PLAYER_IDLE:
-					LOG("IDLE");
-					break;
-				case PLAYER_WALKING:
-					LOG("WALKING");
-					break;
-				case PLAYER_CROUCH:
-					LOG("CROUCH");
-					break;
-				case PLAYER_LOOKUP:
-					LOG("LOOKUP");
-					break;
-				case PLAYER_JUMP:
-					LOG("JUMP");
-					break;
-				case PLAYER_FALLING:
-					LOG("FALLING");
-					break;
-				case PLAYER_DOUBLEJUMP:
-					LOG("DOUBLE JUMP");
-					break;
-				default:
-					break;
-				}
-
-
+	
 				//NORMAL JUMP
 
 				//if its almost in the top point doing up and down we reduce the gravity for an smooth effect
@@ -174,13 +172,22 @@ update_status Player::PreUpdate()
 						walkingLeftF();
 					}
 
+					//SHOOT while jumping
+					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT)
+					{
+						timeShoot.start();
+						status = PLAYER_SHOOT;
+						previousStatus = PLAYER_JUMP;
+					}
 
-				}
+
+				} //starting to fall
 				else if (status == PLAYER_JUMP && timeJump.isStarted() && timeJump.getTicks() >= 500)
 				{
 					status = PLAYER_FALLING;
 					previousStatus = PLAYER_JUMP;
 				}
+
 		
 				//DOUBLE JUMP
 
@@ -239,17 +246,25 @@ update_status Player::PreUpdate()
 				if (status == PLAYER_FALLING || status == PLAYER_IDLE || status == PLAYER_SHOOT)
 				{
 
-					if (timeJump.getTicks() >= 600)
+					if (timeJump.getTicks() >= 670)
 					{
 						gravity = GRAVITY +0.5;
 					}
 
-					if (timeDoubleJump.getTicks() >= 700)
+					if (timeDoubleJump.getTicks() >= 800)
 					{
 						gravity = GRAVITY + 0.7;
 					}
 
 					if (!grounded){
+
+						//SHOOT while falling
+						if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT)
+						{
+							timeShoot.start();
+							status = PLAYER_SHOOT;
+							previousStatus = PLAYER_FALLING;
+						}
 
 						//if while are falling we press the walking right button
 						if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
@@ -268,7 +283,7 @@ update_status Player::PreUpdate()
 				}
 
 				//walking right
-				if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH)
+				if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && status != PLAYER_CROUCH && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
 				{
 
 					//DOUBLE JUMP inside walking right
@@ -302,13 +317,14 @@ update_status Player::PreUpdate()
 						walkingRightF();
 					}
 
+					
 				
 
 				}
 				
 
 				//walking left
-				if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH)
+				if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && status != PLAYER_CROUCH && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
 				{
 					//DOUBLE JUMP inside walking right
 					if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
@@ -340,6 +356,10 @@ update_status Player::PreUpdate()
 						previousStatus = PLAYER_JUMP;
 						walkingLeftF();
 					}
+
+
+				
+
 				}
 
 				//idle right
@@ -358,11 +378,21 @@ update_status Player::PreUpdate()
 
 				//crouch
 				if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && status != PLAYER_JUMP && status != PLAYER_FALLING) 
-				{
-					
+				{	
 					status = PLAYER_CROUCH;
 					previousStatus = PLAYER_IDLE;
 					crouchF();
+				}
+
+				if (status == PLAYER_CROUCH)
+				{
+					//SHOOT while falling
+					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN  && status != PLAYER_LOOKUP && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH)
+					{
+						timeShootCrouch.start();
+						status = PLAYER_SHOOTCROUCH;
+						previousStatus = PLAYER_CROUCH;
+					}
 				}
 
 				//standUp right
@@ -382,7 +412,7 @@ update_status Player::PreUpdate()
 				}
 
 				//lookUp
-				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT  && status != PLAYER_SHOOTLOOKUP)
 				{
 					if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping)
 					{
@@ -394,6 +424,21 @@ update_status Player::PreUpdate()
 						status = PLAYER_LOOKUP;
 						previousStatus = PLAYER_DOUBLEJUMP;
 					
+					}
+
+				
+				}
+
+			
+				if (status == PLAYER_LOOKUP)
+				{
+					//SHOOT while falling
+					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN  && status != PLAYER_CROUCH && status != PLAYER_SHOOT && status != PLAYER_SHOOTLOOKUP)
+					{
+						timeShootLookUp.start();
+						status = PLAYER_SHOOTLOOKUP;
+						previousStatus = PLAYER_LOOKUP;
+						shootLookUpF();
 					}
 				}
 
@@ -412,7 +457,7 @@ update_status Player::PreUpdate()
 				}
 
 				//jump
-				if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping && status != PLAYER_CROUCH)
+				if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN  && !jumping && status != PLAYER_CROUCH && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
 				{
 					status = PLAYER_JUMP;
 					previousStatus = PLAYER_IDLE;
@@ -420,19 +465,42 @@ update_status Player::PreUpdate()
 				}
 
 				//SHOOT
-				if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
-				{
+				if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
+				{ 
 					timeShoot.start();
 					status = PLAYER_SHOOT;
 					previousStatus = PLAYER_IDLE;
 				}
 
-				if (timeShoot.isStarted() && timeShoot.getTicks() >= 200)
+				if (status == PLAYER_SHOOT && timeShoot.isStarted() && timeShoot.getTicks() >= 300)
 				{
-					status = PLAYER_IDLE;
+					status = previousStatus;
 					previousStatus = PLAYER_SHOOT;
 					shoot.Reset();
 					timeShoot.stop();
+				}
+
+				if (status == PLAYER_SHOOTCROUCH && timeShootCrouch.isStarted() && timeShootCrouch.getTicks() >= 300)
+				{
+					status = previousStatus;
+					previousStatus = PLAYER_SHOOTCROUCH;
+					shootCrouch.Reset();
+					timeShootCrouch.stop();
+				}
+
+				if (status == PLAYER_SHOOTLOOKUP && timeShootLookUp.isStarted() && timeShootLookUp.getTicks() >= 300)
+				{
+					status = previousStatus;
+					previousStatus = PLAYER_SHOOTLOOKUP;
+					shootLookUp.Reset();
+					timeShootLookUp.stop();
+					endShootLookUpF();
+				}
+
+				if (grounded)
+				{
+					timeJump.stop();
+					timeDoubleJump.stop();
 				}
 
 				return UPDATE_CONTINUE;
@@ -510,6 +578,7 @@ update_status Player::Update()
 
 		case PLAYER_LOOKUP:
 		{
+		
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(lookUp.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -559,6 +628,34 @@ update_status Player::Update()
 			else
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shoot.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+			}
+		}
+
+		break;
+
+		case PLAYER_SHOOTLOOKUP:
+		{
+			if (facingRight)
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootLookUp.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootLookUp.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+			}
+		}
+
+		break;
+
+		case PLAYER_SHOOTCROUCH:
+		{
+			if (facingRight)
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootCrouch.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootCrouch.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
 			}
 		}
 
@@ -628,6 +725,24 @@ update_status Player::doubleJumpF()
 	jumping = true;
 	grounded = false;
 	gravity = GRAVITY;
+	return UPDATE_CONTINUE;
+}
+
+
+
+update_status Player::shootLookUpF()
+{
+	//position.y -= 9;
+	//position.x -= 5;
+
+	return UPDATE_CONTINUE;
+}
+
+update_status Player::endShootLookUpF()
+{
+	//position.y += 9;
+	//position.x += 5;
+
 	return UPDATE_CONTINUE;
 }
 
