@@ -19,6 +19,7 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+	void moveUI();
 
 
 	//graphics
@@ -37,6 +38,12 @@ public:
 	SDL_Rect lifeRed;
 	SDL_Rect lifeBlank;
 
+	Collider* moveCameraCollider = nullptr;
+	Collider* startLevelCollider = nullptr;
+
+
+	iPoint facePlayerPos;
+	iPoint lifePlayerPos;
 
 	//Player
 	Player *player;

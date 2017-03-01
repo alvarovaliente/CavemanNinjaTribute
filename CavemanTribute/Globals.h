@@ -69,5 +69,9 @@ enum update_status
 #define FULLSCREEN false
 #define VSYNC true
 #define TITLE "Caveman Ninja"
+#define SHOOTRIGHT 0
+#define SHOOTLEFT 1
+#define SHOOTUP 2
+
 
 #endif //__GLOBALS_H__

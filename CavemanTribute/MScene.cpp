@@ -20,7 +20,12 @@ MScene::MScene(bool start_enabled) : Module(start_enabled)
 	mountains = NULL;
 	facePlayer = NULL;
 	lifePlayer = NULL;
+	
+	facePlayerPos.x = 0;
+	facePlayerPos.y = 0;
 
+	lifePlayerPos.x = 25;
+	lifePlayerPos.y = 17;
 
 	//normal face ui
 	faceUInormal.x = 0;
@@ -86,10 +91,27 @@ bool MScene::Start()
 	player->position.y = infPlayer.position.y;
 
 	//GROUND WALL
-	App->FCollision->AddCollider({ 0, SCREEN_HEIGHT - 15, SCREEN_WIDTH, 20 }, COLLIDER_GROUND, this);
+	App->FCollision->AddCollider({ 0, SCREEN_HEIGHT - 15, SCREEN_WIDTH * 5, 20 }, COLLIDER_GROUND, this);
+
+
+	//CAMERA MOVE COLLIDER
+	moveCameraCollider = App->FCollision->AddCollider({ SCREEN_WIDTH / 2, 0, 2, SCREEN_HEIGHT }, COLLIDER_MOVECAMERA, this);
 	
+	//STARTLEVEL COLLIDER
+	startLevelCollider = App->FCollision->AddCollider({ 0, 0, 2, SCREEN_HEIGHT }, COLLIDER_STARTLEVEL, this);
+
 	pause = false;
 	return true;
+}
+
+void MScene::moveUI()
+{
+
+	moveCameraCollider->SetPos(App->scene->moveCameraCollider->rect.x + 1, App->scene->moveCameraCollider->rect.y);
+	startLevelCollider->SetPos(App->scene->startLevelCollider->rect.x + 1, App->scene->startLevelCollider->rect.y);
+	facePlayerPos.x += 1;
+	lifePlayerPos.x += 1;
+
 }
 
 
@@ -132,7 +154,7 @@ update_status MScene::Update()
 		App->renderer->Blit(background, 0, 0, NULL, SDL_FLIP_NONE);
 
 		//FACE
-		App->renderer->Blit(facePlayer, 1, 1, &faceUInormal, SDL_FLIP_NONE);
+		App->renderer->Blit(facePlayer, facePlayerPos.x, facePlayerPos.y, &faceUInormal, SDL_FLIP_NONE);
 
 		//LIFE
 		for (int i = 0; i < player->life.size();i++)
@@ -141,20 +163,20 @@ update_status MScene::Update()
 			{ 
 				if (player->actualLife >= 15) //green life
 				{
-					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeGreen, SDL_FLIP_NONE);
+					App->renderer->Blit(lifePlayer, lifePlayerPos.x + (5 * i), lifePlayerPos.y, &lifeGreen, SDL_FLIP_NONE);
 				}
 				else if (player->actualLife < 15 && player->actualLife > 5) //yellow life
 				{
-					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeYellow, SDL_FLIP_NONE);
+					App->renderer->Blit(lifePlayer, lifePlayerPos.x + (5 * i), lifePlayerPos.y, &lifeYellow, SDL_FLIP_NONE);
 				}
 				else //red life
 				{
-					App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeRed, SDL_FLIP_NONE);
+					App->renderer->Blit(lifePlayer, lifePlayerPos.x + (5 * i), lifePlayerPos.y, &lifeRed, SDL_FLIP_NONE);
 				}
 			}
 			else if (player->life[i] == 0)
 			{
-				App->renderer->Blit(lifePlayer, 25 + (5 * i), 17, &lifeBlank, SDL_FLIP_NONE);
+				App->renderer->Blit(lifePlayer, lifePlayerPos.x + (5 * i), lifePlayerPos.y, &lifeBlank, SDL_FLIP_NONE);
 			}
 		}
 	

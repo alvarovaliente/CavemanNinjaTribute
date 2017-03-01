@@ -10,7 +10,7 @@ class Collider;
 
 enum PARTICLE_TYPE
 {
-	PARTICLE_SOFTSHOT = 1,
+	PARTICLE_STONEAXE = 1,
 	PARTICLE_HARDSHOT
 };
 
@@ -25,6 +25,7 @@ struct infoParticle
 	Animation anim;
 	Animation explo;
 	SDL_Texture* text;
+	int direction;
 };
 
 

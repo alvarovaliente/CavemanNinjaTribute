@@ -53,6 +53,7 @@ public:
 
 	//Textures
 	SDL_Texture *graphicsPlayer = nullptr;
+	SDL_Texture *graphicsStoneAxe = nullptr;
 
 	//Animations
 	Animation idle;
@@ -65,6 +66,8 @@ public:
 	Animation shoot;
 	Animation shootLookUp;
 	Animation shootCrouch;
+
+	Animation stoneAxe;
 
 	//Status
 	PLAYER_STATUS status;

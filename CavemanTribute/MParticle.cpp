@@ -4,6 +4,7 @@
 #include "MParticle.h"
 #include "SDL/include/SDL.h"
 #include "Point.h"
+#include "StoneAxe.h"
 
 
 
@@ -96,6 +97,19 @@ void MParticle::createParticle(infoParticle info, PARTICLE_TYPE type, COLLIDER_T
 
 	switch (type)
 	{
+
+	case PARTICLE_STONEAXE:
+	{
+		StoneAxe *axe = new StoneAxe(info);
+
+		if (collider_type != COLLIDER_NONE)
+		{
+			axe->collider = App->FCollision->AddCollider({ axe->position.x, axe->position.y, 20, 20 }, collider_type, this);
+		}
+
+		particles.push_back(axe);
+	}
+	break;
 	
 	default:
 		break;

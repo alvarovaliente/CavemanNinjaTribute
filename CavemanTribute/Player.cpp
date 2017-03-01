@@ -106,6 +106,16 @@ Player::Player()
 	shootCrouch.frames.push_back({ 304, 606, 34, 33 });
 	shootCrouch.speed = 0.3f;
 
+	//stoneAxe
+	stoneAxe.frames.push_back({ 8, 6, 21, 17 });
+	stoneAxe.frames.push_back({ 42, 5, 17, 21 });
+	stoneAxe.frames.push_back({ 74, 6, 15, 23 });
+	stoneAxe.frames.push_back({ 102, 9, 19, 18 });
+	stoneAxe.frames.push_back({ 4, 41, 21, 17 });
+	stoneAxe.frames.push_back({ 37, 38, 17, 21 });
+	stoneAxe.frames.push_back({ 71, 35, 15, 23 });
+	stoneAxe.frames.push_back({ 103, 37, 19, 18 });
+	jump.speed = 0.01f;
 }
 
 Player::~Player()
@@ -116,6 +126,7 @@ Player::~Player()
 bool Player::Start()
 {
 	graphicsPlayer = App->Ftextures->Load("Sprites/joe.png");
+	graphicsStoneAxe = App->Ftextures->Load("Sprites/weapon_tomahawk.png");
 
 	for (int i = 0; i < 18; i++)
 	{
@@ -144,6 +155,68 @@ update_status Player::PreUpdate()
 			if (status != PLAYER_DYING)
 			{
 
+				if (status == PLAYER_IDLE)
+				{
+
+					//SHOOT
+					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
+					{
+						infoParticle inf;
+
+						inf.anim = this->stoneAxe;
+						inf.text = this->graphicsStoneAxe;
+						inf.position.x = this->position.x;
+						inf.position.y = this->position.y;
+						inf.speed.x = 2.0;
+						inf.speed.y = 0.4;
+						if (facingRight)
+						{
+							inf.direction = SHOOTRIGHT;
+						}
+						else
+						{
+							inf.direction = SHOOTLEFT;
+						}
+
+						App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+
+						timeShoot.start();
+						status = PLAYER_SHOOT;
+						previousStatus = PLAYER_IDLE;
+					}
+				}
+
+				if (status == PLAYER_DOUBLEJUMP)
+				{
+
+					//SHOOT
+					if (!timeShoot.isStarted() && App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
+					{
+						infoParticle inf;
+
+						inf.anim = this->stoneAxe;
+						inf.text = this->graphicsStoneAxe;
+						inf.position.x = this->position.x;
+						inf.position.y = this->position.y;
+						inf.speed.x = 2.0;
+						inf.speed.y = 0.4;
+						if (facingRight)
+						{
+							inf.direction = SHOOTRIGHT;
+						}
+						else
+						{
+							inf.direction = SHOOTLEFT;
+						}
+
+						App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+
+						timeShoot.start();
+						//status = PLAYER_SHOOT;
+						//previousStatus = PLAYER_IDLE;
+					}
+				}
+				
 	
 				//NORMAL JUMP
 
@@ -172,12 +245,50 @@ update_status Player::PreUpdate()
 						walkingLeftF();
 					}
 
-					//SHOOT while jumping
-					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT)
+					//SHOOT normal while jumping
+					if (!timeShoot.isStarted() &&  App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT)
 					{
-						timeShoot.start();
-						status = PLAYER_SHOOT;
-						previousStatus = PLAYER_JUMP;
+						if (App->input->GetKey(SDL_SCANCODE_W))
+						{
+							infoParticle inf;
+
+							inf.anim = this->stoneAxe;
+							inf.text = this->graphicsStoneAxe;
+							inf.position.x = this->position.x;
+							inf.position.y = this->position.y;
+							inf.speed.x = 0;
+							inf.speed.y = 3.0;
+							inf.direction = SHOOTUP;
+							App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+							timeShoot.start();
+							//timeShootLookUp.start();
+						}
+						else
+						{
+							infoParticle inf;
+
+							inf.anim = this->stoneAxe;
+							inf.text = this->graphicsStoneAxe;
+							inf.position.x = this->position.x;
+							inf.position.y = this->position.y;
+							inf.speed.x = 2.0;
+							inf.speed.y = 0.4;
+							if (facingRight)
+							{
+								inf.direction = SHOOTRIGHT;
+							}
+							else
+							{
+								inf.direction = SHOOTLEFT;
+							}
+
+							App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+
+							timeShoot.start();
+							//status = PLAYER_SHOOT;
+							//previousStatus = PLAYER_JUMP;
+						}
+						
 					}
 
 
@@ -259,11 +370,29 @@ update_status Player::PreUpdate()
 					if (!grounded){
 
 						//SHOOT while falling
-						if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT)
+						if (!timeShoot.isStarted() &&  App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT)
 						{
+							infoParticle inf;
+
+							inf.anim = this->stoneAxe;
+							inf.text = this->graphicsStoneAxe;
+							inf.position.x = this->position.x;
+							inf.position.y = this->position.y;
+							inf.speed.x = 2.0;
+							inf.speed.y = 0.4;
+							if (facingRight)
+							{
+								inf.direction = SHOOTRIGHT;
+							}
+							else
+							{
+								inf.direction = SHOOTLEFT;
+							}
+							App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+
 							timeShoot.start();
-							status = PLAYER_SHOOT;
-							previousStatus = PLAYER_FALLING;
+							//status = PLAYER_SHOOT;
+							//previousStatus = PLAYER_FALLING;
 						}
 
 						//if while are falling we press the walking right button
@@ -365,6 +494,8 @@ update_status Player::PreUpdate()
 				//idle right
 				if (App->input->GetKey(SDL_SCANCODE_D) == KEY_IDLE && status == PLAYER_WALKING && facingRight == true)
 				{
+					
+
 					status = PLAYER_IDLE;
 					previousStatus = PLAYER_WALKING;
 				}
@@ -372,6 +503,7 @@ update_status Player::PreUpdate()
 				//idle left
 				if (App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE && status == PLAYER_WALKING && facingRight == false)
 				{
+
 					status = PLAYER_IDLE;
 					previousStatus = PLAYER_WALKING;
 				}
@@ -389,6 +521,25 @@ update_status Player::PreUpdate()
 					//SHOOT while falling
 					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN  && status != PLAYER_LOOKUP && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH)
 					{
+
+						infoParticle inf;
+
+						inf.anim = this->stoneAxe;
+						inf.text = this->graphicsStoneAxe;
+						inf.position.x = this->position.x;
+						inf.position.y = this->position.y;
+						inf.speed.x = 2.0;
+						inf.speed.y = 0.4;
+						if (facingRight)
+						{
+							inf.direction = SHOOTRIGHT;
+						}
+						else
+						{
+							inf.direction = SHOOTLEFT;
+						}
+						App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+
 						timeShootCrouch.start();
 						status = PLAYER_SHOOTCROUCH;
 						previousStatus = PLAYER_CROUCH;
@@ -435,6 +586,17 @@ update_status Player::PreUpdate()
 					//SHOOT while falling
 					if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN  && status != PLAYER_CROUCH && status != PLAYER_SHOOT && status != PLAYER_SHOOTLOOKUP)
 					{
+						infoParticle inf;
+
+						inf.anim = this->stoneAxe;
+						inf.text = this->graphicsStoneAxe;
+						inf.position.x = this->position.x;
+						inf.position.y = this->position.y;
+						inf.speed.x = 0;
+						inf.speed.y = 3.0;
+						inf.direction = SHOOTUP;
+						App->FParticle->createParticle(inf, PARTICLE_STONEAXE, COLLIDER_STONEAXE);
+
 						timeShootLookUp.start();
 						status = PLAYER_SHOOTLOOKUP;
 						previousStatus = PLAYER_LOOKUP;
@@ -464,18 +626,18 @@ update_status Player::PreUpdate()
 					jumpF();
 				}
 
-				//SHOOT
-				if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN && status != PLAYER_CROUCH && status != PLAYER_LOOKUP && status != PLAYER_SHOOT && status != PLAYER_SHOOTCROUCH && status != PLAYER_SHOOTLOOKUP)
-				{ 
-					timeShoot.start();
-					status = PLAYER_SHOOT;
-					previousStatus = PLAYER_IDLE;
-				}
+				
 
 				if (status == PLAYER_SHOOT && timeShoot.isStarted() && timeShoot.getTicks() >= 300)
 				{
-					status = previousStatus;
+					status = PLAYER_IDLE;
 					previousStatus = PLAYER_SHOOT;
+					shoot.Reset();
+					timeShoot.stop();
+				}
+
+				if (status == PLAYER_JUMP || status == PLAYER_DOUBLEJUMP || status == PLAYER_FALLING && timeShoot.isStarted() && timeShoot.getTicks() >= 600)
+				{		
 					shoot.Reset();
 					timeShoot.stop();
 				}
@@ -487,7 +649,8 @@ update_status Player::PreUpdate()
 					shootCrouch.Reset();
 					timeShootCrouch.stop();
 				}
-
+				
+				//SHOOT LOOKUP
 				if (status == PLAYER_SHOOTLOOKUP && timeShootLookUp.isStarted() && timeShootLookUp.getTicks() >= 300)
 				{
 					status = previousStatus;
@@ -523,6 +686,7 @@ update_status Player::Update()
 
 		case PLAYER_IDLE:
 		{
+			LOG("IDLE");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(idle.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -537,6 +701,7 @@ update_status Player::Update()
 
 		case PLAYER_FALLING:
 		{
+			LOG("FALLING");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(falling.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -551,6 +716,7 @@ update_status Player::Update()
 
 		case PLAYER_WALKING:
 		{
+			LOG("WALKING");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(walking.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -564,6 +730,7 @@ update_status Player::Update()
 
 		case PLAYER_CROUCH:
 		{
+			LOG("CROUCH");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(crouch.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -578,7 +745,7 @@ update_status Player::Update()
 
 		case PLAYER_LOOKUP:
 		{
-		
+			LOG("LOOKUP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(lookUp.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -593,6 +760,7 @@ update_status Player::Update()
 
 		case PLAYER_JUMP:
 		{
+			LOG("JUMP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(jump.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -607,6 +775,7 @@ update_status Player::Update()
 
 		case PLAYER_DOUBLEJUMP:
 		{
+			LOG("DOUBLEJUMP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(doubleJump.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -621,6 +790,7 @@ update_status Player::Update()
 
 		case PLAYER_SHOOT:
 		{
+			LOG("SHOOT");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shoot.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -635,6 +805,7 @@ update_status Player::Update()
 
 		case PLAYER_SHOOTLOOKUP:
 		{
+			LOG("SHOOTLOOKUP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootLookUp.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -649,6 +820,7 @@ update_status Player::Update()
 
 		case PLAYER_SHOOTCROUCH:
 		{
+			LOG("SHOOTCROUCH");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootCrouch.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -669,6 +841,8 @@ update_status Player::Update()
 		return UPDATE_CONTINUE;
 
 }
+
+
 
 update_status Player::walkingRightF()
 {
@@ -775,6 +949,22 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 		}
 		
 	}
+	break;
+
+	case COLLIDER_MOVECAMERA:
+	{
+		
+		App->renderer->camera.x -= 3;
+		App->scene->moveUI();
+	}
+
+	break;
+
+	case COLLIDER_STARTLEVEL:
+	{
+		position.x += speed.x;
+	}
+
 	break;
 
 	default:

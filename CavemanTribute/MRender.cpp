@@ -50,8 +50,13 @@ update_status MRender::PreUpdate()
 // Called every draw update
 update_status MRender::Update()
 {
+	//LOG("CAMERA X %f", App->renderer->camera.x);
+	//LOG("CAMERA Y %f",App->renderer->camera.y);
+
 	// debug camera
 	int speed = 10;
+
+	
 
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		App->renderer->camera.y += speed;

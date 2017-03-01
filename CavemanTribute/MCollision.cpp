@@ -24,7 +24,11 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_GROUND][COLLIDER_PLATFORM] = false;
 
 
-	
+	matrix[COLLIDER_MOVECAMERA][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_MOVECAMERA] = true;
+
+	matrix[COLLIDER_STARTLEVEL][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_STARTLEVEL] = true;
 
 	
 
@@ -57,7 +61,13 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_ENEMY][COLLIDER_PLATFORM_BORDER_RIGHT] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLATFORM_BORDER_LEFT_SPEC] = true;
 	matrix[COLLIDER_ENEMY][COLLIDER_PLATFORM_BORDER_RIGHT_SPEC] = true;
-	
+
+	matrix[COLLIDER_STONEAXE][COLLIDER_GROUND] = true;
+	matrix[COLLIDER_STONEAXE][COLLIDER_ENEMY] = true;
+	matrix[COLLIDER_STONEAXE][COLLIDER_STONEAXE] = false;
+	matrix[COLLIDER_GROUND][COLLIDER_STONEAXE] = true;
+	matrix[COLLIDER_STONEAXE][COLLIDER_PLAYER] = false;
+	matrix[COLLIDER_PLAYER][COLLIDER_STONEAXE] = true;
 
 	
 }
@@ -173,12 +183,16 @@ update_status MCollision::PostUpdate()
 				App->renderer->DrawQuad(col->rect, 255, 162, 0, alpha);
 				break;
 
-			case COLLIDER_POTION_BLUE:
+			case COLLIDER_STARTLEVEL:
 				App->renderer->DrawQuad(col->rect, 255, 162, 0, alpha);
 				break;
 
-			case COLLIDER_POTION_YELLOW:
+			case COLLIDER_MOVECAMERA:
 				App->renderer->DrawQuad(col->rect, 255, 162, 0, alpha);
+				break;
+
+			case COLLIDER_STONEAXE:
+				App->renderer->DrawQuad(col->rect, 0, 255, 0, alpha);
 				break;
 			}
 		}
