@@ -25,7 +25,7 @@ private:
 
 	//variables
 	std::list<Collider*> colliders;
-	std::list<Collider*> colliding;
+	
 	bool matrix[COLLIDER_MAX][COLLIDER_MAX];
 	bool debug;
 };

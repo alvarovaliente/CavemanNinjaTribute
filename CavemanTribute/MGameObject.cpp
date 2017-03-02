@@ -127,6 +127,58 @@ void MGameObject::OnCollision(Collider* c1, Collider* c2)
 	}
 }
 
+void MGameObject::OnCollisionEnter(Collider* c1, Collider* c2)
+{
+	for (auto& it : gameObjects)
+	{
+		if (it != nullptr)
+		{
+
+			if ((it)->colliderBody != nullptr)
+			{
+				if ((it)->colliderBody->to_delete != true)
+				{
+					if ((it)->colliderBody == c1)
+					{
+						it->OnCollisionEnter(c1, c2);
+					}
+
+				}
+			}
+
+
+		}
+
+	}
+}
+
+void MGameObject::OnCollisionExit(Collider* c1, Collider* c2)
+{
+	for (auto& it : gameObjects)
+	{
+		if (it != nullptr)
+		{
+
+			if ((it)->colliderBody != nullptr)
+			{
+				if ((it)->colliderBody->to_delete != true)
+				{
+					if ((it)->colliderBody == c1)
+					{
+						it->OnCollisionExit(c1, c2);
+					}
+
+				}
+			}
+
+
+		}
+
+	}
+}
+
+
+
 
 GameObject* MGameObject::returnPlayer()
 {
@@ -167,6 +219,22 @@ void MGameObject::createGameObject(infoGameObject info, GAMEOBJECT_TYPE type, CO
 	}
 
 		break;
+
+	case BASIC_ENEMY:
+	{
+		BasicEnemy* enemy = new BasicEnemy(info);
+
+		if (collider_type != COLLIDER_NONE)
+		{
+			enemy->colliderBody = App->FCollision->AddCollider({ enemy->position.x, enemy->position.y, ENEMY_COLLIDER_BODY_WIDTH, ENEMY_COLLIDER_BODY_HEIGHT }, COLLIDER_ENEMY, this);
+		}
+
+		enemy->Start();
+
+		gameObjects.push_back(enemy);
+	}
+
+	break;
 
 	default:
 		break;

@@ -60,7 +60,7 @@ SDL_Texture* const MTextures::Load(const char* path)
 
 	if (surface == nullptr)
 	{
-		LOG("Could not load surface with path: %s. IMG_Load: %s", path, IMG_GetError());
+		//LOG("Could not load surface with path: %s. IMG_Load: %s", path, IMG_GetError());
 	}
 	else
 	{
@@ -68,12 +68,12 @@ SDL_Texture* const MTextures::Load(const char* path)
 
 		if (texture == nullptr)
 		{
-			LOG("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
+			//LOG("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
 		}
 		else
 		{
 			textures.push_back(texture);
-			LOG("-----------------------------TEXTURE LOADED");
+			//LOG("-----------------------------TEXTURE LOADED");
 		}
 
 		SDL_FreeSurface(surface);

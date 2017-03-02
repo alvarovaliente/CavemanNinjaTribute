@@ -38,6 +38,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(Collider* c1, Collider* c2);
+	void OnCollisionEnter(Collider* c1, Collider* c2);
+	void OnCollisionExit(Collider* c1, Collider* c2);
 
 	//Behaviour methods
 	update_status walkingRightF();

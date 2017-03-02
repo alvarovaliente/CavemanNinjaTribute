@@ -48,5 +48,17 @@ void GameObject::OnCollision(Collider* c1, Collider* c2)
 
 }
 
+void GameObject::OnCollisionEnter(Collider* c1, Collider* c2)
+{
+
+}
+
+
+void GameObject::OnCollisionExit(Collider* c1, Collider* c2)
+{
+
+}
+
+
 
 

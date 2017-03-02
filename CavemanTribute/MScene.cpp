@@ -100,6 +100,13 @@ bool MScene::Start()
 	//STARTLEVEL COLLIDER
 	startLevelCollider = App->FCollision->AddCollider({ 0, 0, 2, SCREEN_HEIGHT }, COLLIDER_STARTLEVEL, this);
 
+
+	infoGameObject inf;
+	//ENEMIES
+	//inf.position = { 120, 188 };
+
+	//App->FGameObject->createGameObject(inf, BASIC_ENEMY, COLLIDER_ENEMY);
+
 	pause = false;
 	return true;
 }

@@ -53,6 +53,8 @@ public:
 	virtual update_status Update();
 	virtual const bool isDead();
 	virtual void OnCollision(Collider* c1, Collider* c2);
+	virtual void OnCollisionEnter(Collider* c1, Collider* c2);
+	virtual void OnCollisionExit(Collider* c1, Collider* c2);
 
 };
 

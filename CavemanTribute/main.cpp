@@ -37,7 +37,7 @@ int main(int argc, char ** argv)
 
 		case MAIN_START:
 
-			LOG("Application Init --------------");
+			//LOG("Application Init --------------");
 			if (App->Init() == false)
 			{
 				LOG("Application Init exits with error -----");
@@ -46,7 +46,7 @@ int main(int argc, char ** argv)
 			else
 			{
 				state = MAIN_UPDATE;
-				LOG("Application Update --------------");
+				//LOG("Application Update --------------");
 			}
 
 			break;
@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
 
 		case MAIN_FINISH:
 
-			LOG("Application CleanUp --------------");
+			//LOG("Application CleanUp --------------");
 			if (App->CleanUp() == false)
 			{
 				LOG("Application CleanUp exits with error -----");
@@ -91,6 +91,6 @@ int main(int argc, char ** argv)
 	}
 
 	RELEASE(App);
-	LOG("Application Finish --------------");
+	//LOG("Application Finish --------------");
 	return main_return;
 }

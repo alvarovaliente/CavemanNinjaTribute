@@ -115,7 +115,7 @@ bool MAudio::PlayMusic(const char* path, float fade_time)
 		}
 	}
 
-	LOG("Successfully playing %s", path);
+	//LOG("Successfully playing %s", path);
 	return ret;
 }
 

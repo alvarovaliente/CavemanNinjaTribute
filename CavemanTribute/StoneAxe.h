@@ -21,6 +21,9 @@ public:
 	update_status Update();
 	bool const isDead();
 	void OnCollision(Collider* c1, Collider* c2);
+	void OnCollisionEnter(Collider* c1, Collider* c2);
+	void OnCollisionExit(Collider* c1, Collider* c2);
+
 
 	//animation
 	Animation anim;

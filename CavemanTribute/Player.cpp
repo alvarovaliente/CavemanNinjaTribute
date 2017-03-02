@@ -686,7 +686,7 @@ update_status Player::Update()
 
 		case PLAYER_IDLE:
 		{
-			LOG("IDLE");
+			//LOG("IDLE");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(idle.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -701,7 +701,7 @@ update_status Player::Update()
 
 		case PLAYER_FALLING:
 		{
-			LOG("FALLING");
+			//LOG("FALLING");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(falling.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -716,7 +716,7 @@ update_status Player::Update()
 
 		case PLAYER_WALKING:
 		{
-			LOG("WALKING");
+			//LOG("WALKING");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(walking.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -730,7 +730,7 @@ update_status Player::Update()
 
 		case PLAYER_CROUCH:
 		{
-			LOG("CROUCH");
+			//LOG("CROUCH");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(crouch.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -745,7 +745,7 @@ update_status Player::Update()
 
 		case PLAYER_LOOKUP:
 		{
-			LOG("LOOKUP");
+			//LOG("LOOKUP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(lookUp.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -760,7 +760,7 @@ update_status Player::Update()
 
 		case PLAYER_JUMP:
 		{
-			LOG("JUMP");
+			//LOG("JUMP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(jump.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -775,7 +775,7 @@ update_status Player::Update()
 
 		case PLAYER_DOUBLEJUMP:
 		{
-			LOG("DOUBLEJUMP");
+			//LOG("DOUBLEJUMP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(doubleJump.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -790,7 +790,7 @@ update_status Player::Update()
 
 		case PLAYER_SHOOT:
 		{
-			LOG("SHOOT");
+			//LOG("SHOOT");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shoot.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -805,7 +805,7 @@ update_status Player::Update()
 
 		case PLAYER_SHOOTLOOKUP:
 		{
-			LOG("SHOOTLOOKUP");
+			//LOG("SHOOTLOOKUP");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootLookUp.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -820,7 +820,7 @@ update_status Player::Update()
 
 		case PLAYER_SHOOTCROUCH:
 		{
-			LOG("SHOOTCROUCH");
+			//LOG("SHOOTCROUCH");
 			if (facingRight)
 			{
 				App->renderer->Blit(graphicsPlayer, position.x, position.y, &(shootCrouch.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
@@ -938,6 +938,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 
 	case COLLIDER_GROUND:
 	{
+		LOG("HAGO SUELO");
 		grounded = true;
 
 		if (status == PLAYER_FALLING)
@@ -971,4 +972,29 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 
 		break;
 	}
+}
+
+void Player::OnCollisionEnter(Collider* c1, Collider* c2)
+{
+	switch (c2->type)
+	{
+
+	case COLLIDER_GROUND:
+	{
+
+		LOG("ENTRO SUELO");
+	}
+	break;
+
+	default:
+
+		break;
+	}
+
+}
+
+void Player::OnCollisionExit(Collider* c1, Collider* c2)
+{
+	LOG("%i", c1->type);
+	LOG("%i", c2->type);
 }

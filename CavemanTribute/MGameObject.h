@@ -9,6 +9,7 @@
 #include "GameObject.h"
 #include <list>
 #include "Player.h"
+#include "BasicEnemy.h"
 
 
 class MGameObject : public Module
@@ -26,6 +27,8 @@ public:
 	GameObject* returnPlayer();
 	void createGameObject(infoGameObject info, GAMEOBJECT_TYPE type, COLLIDER_TYPE collider_type);
 	void OnCollision(Collider* c1, Collider* c2);
+	void OnCollisionEnter(Collider* c1, Collider* c2);
+	void OnCollisionExit(Collider* c1, Collider* c2);
 
 private:
 

@@ -41,3 +41,13 @@ void Particle::OnCollision(Collider* c1, Collider* c2)
 {
 
 }
+
+void Particle::OnCollisionEnter(Collider* c1, Collider* c2)
+{
+
+}
+
+void Particle::OnCollisionExit(Collider* c1, Collider* c2)
+{
+
+}
