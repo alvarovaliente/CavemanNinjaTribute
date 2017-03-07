@@ -68,7 +68,10 @@ update_status Application::Update()
 
 	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled() == true)
+		{
 			ret = (*it)->Update();
+			
+		}
 
 	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if ((*it)->IsEnabled() == true)

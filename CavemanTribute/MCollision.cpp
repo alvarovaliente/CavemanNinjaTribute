@@ -20,21 +20,23 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_GROUND][COLLIDER_PLAYER] = true;
 	matrix[COLLIDER_GROUND][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_GROUND][COLLIDER_STARTLEVEL] = false;
-	matrix[COLLIDER_STARTLEVEL][COLLIDER_GROUND] = false;
-	matrix[COLLIDER_MOVECAMERA][COLLIDER_GROUND] = false;
 	matrix[COLLIDER_GROUND][COLLIDER_MOVECAMERA] = false;
-
-	matrix[COLLIDER_MOVECAMERA][COLLIDER_PLAYER] = true;
-	matrix[COLLIDER_PLAYER][COLLIDER_MOVECAMERA] = true;
-
-	matrix[COLLIDER_STARTLEVEL][COLLIDER_PLAYER] = true;
-	matrix[COLLIDER_PLAYER][COLLIDER_STARTLEVEL] = true;
+	matrix[COLLIDER_GROUND][COLLIDER_STONEAXE] = true;
 
 	
+	matrix[COLLIDER_MOVECAMERA][COLLIDER_GROUND] = false;
+	matrix[COLLIDER_MOVECAMERA][COLLIDER_PLAYER] = true;
+	
 
+	matrix[COLLIDER_STARTLEVEL][COLLIDER_PLAYER] = true;
+	matrix[COLLIDER_STARTLEVEL][COLLIDER_GROUND] = false;
+
+	matrix[COLLIDER_PLAYER][COLLIDER_STARTLEVEL] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_STONEAXE] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_GROUND] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_ENEMY] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_MOVECAMERA] = true;
 
 
 	matrix[COLLIDER_ENEMY][COLLIDER_GROUND] = true;
@@ -45,11 +47,9 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_STONEAXE][COLLIDER_GROUND] = true;
 	matrix[COLLIDER_STONEAXE][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_STONEAXE][COLLIDER_STONEAXE] = false;
-	matrix[COLLIDER_GROUND][COLLIDER_STONEAXE] = true;
 	matrix[COLLIDER_STONEAXE][COLLIDER_PLAYER] = false;
-	matrix[COLLIDER_PLAYER][COLLIDER_STONEAXE] = false;
-
 	
+
 }
 
 // Destructor
@@ -90,56 +90,60 @@ update_status MCollision::Update()
 		{
 			c2 = *it2;
 
-		
+
 			if (c1->CheckCollision(c2->rect) == true)
 			{
-				
-					if (matrix[c1->type][c2->type] && c1->callback)
-					{
-						if (c1->addNewCollider(c2)) //new collision
-						{
-							c1->callback->OnCollisionEnter(c1, c2);
-						}
-						else //they still colliding
-						{
-							c1->callback->OnCollision(c1, c2);
-						}
-					}
 
-					if (matrix[c2->type][c1->type] && c2->callback)
-					{
-						if (c2->addNewCollider(c1))
-						{
-							c2->callback->OnCollisionEnter(c2, c1);
-						}
-						else
-						{
-							c2->callback->OnCollision(c2, c1);
-						}
-					}
-						
-			}
-			else
-			{
 				if (matrix[c1->type][c2->type] && c1->callback)
-					c1->callback->OnCollisionExit(c1, c2);
+				{
+					if (c1->addNewCollider(c2)) //new collision
+					{
+						c1->callback->OnCollisionEnter(c1, c2);
+					}
+					else //they still colliding
+					{
+						c1->callback->OnCollision(c1, c2);
+					}
+				}
 
 				if (matrix[c2->type][c1->type] && c2->callback)
-					c2->callback->OnCollisionExit(c2, c1);
+				{
+					if (c2->addNewCollider(c1))
+					{
+						c2->callback->OnCollisionEnter(c2, c1);
+					}
+					else
+					{
+						c2->callback->OnCollision(c2, c1);
+					}
+				}
+
 			}
+			else //TODO: comprobar que ya no hace colision desde hace tiempo porque ahora llama siempre que no la hay (comprobar colliding, si esta dentro hay que borrarlo y llamar a exit, si no, no hacer nada)
+			{
+
+				if (c1->existInColliding(c2))
+				{
+					if (c1->removeCollider(c2)){
+						if (matrix[c1->type][c2->type] && c1->callback)
+							c1->callback->OnCollisionExit(c1, c2);
+					}
+				}
 		
 
-				/*if (c1->CheckCollision(c2->rect) == true)
+				if (c2->existInColliding(c1))
 				{
-					if (matrix[c1->type][c2->type] && c1->callback)
-						c1->callback->OnCollision(c1, c2);
+					if (c2->removeCollider(c1)){
+						if (matrix[c2->type][c1->type] && c2->callback)
+						c2->callback->OnCollisionExit(c2, c1);
+					}
+				}
 
-					if (matrix[c2->type][c1->type] && c2->callback)
-						c2->callback->OnCollision(c2, c1);
-				}*/
+			}
 
 
 		}
+	
 	}
 
 	return UPDATE_CONTINUE;

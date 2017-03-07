@@ -103,9 +103,9 @@ bool MScene::Start()
 
 	infoGameObject inf;
 	//ENEMIES
-	//inf.position = { 120, 188 };
+	inf.position = { 120, 188 };
 
-	//App->FGameObject->createGameObject(inf, BASIC_ENEMY, COLLIDER_ENEMY);
+	App->FGameObject->createGameObject(inf, BASIC_ENEMY, COLLIDER_ENEMY);
 
 	pause = false;
 	return true;

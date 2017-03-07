@@ -19,8 +19,8 @@ Player::Player()
 	speed.x = PLAYER_NORMAL_SPEED;
 	speed.y = 0;
 
-	status = PLAYER_IDLE;
-	previousStatus = PLAYER_IDLE;
+	status = PLAYER_FALLING;
+	previousStatus = PLAYER_FALLING;
 
 	actualLife = 18;
 
@@ -354,7 +354,7 @@ update_status Player::PreUpdate()
 
 				//FALLING
 
-				if (status == PLAYER_FALLING || status == PLAYER_IDLE || status == PLAYER_SHOOT)
+				if (status == PLAYER_FALLING /* || status == PLAYER_IDLE || status == PLAYER_SHOOT*/)
 				{
 
 					if (timeJump.getTicks() >= 670)
@@ -938,7 +938,7 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 
 	case COLLIDER_GROUND:
 	{
-		LOG("HAGO SUELO");
+		//LOG("ESTOY EN SUELO");
 		grounded = true;
 
 		if (status == PLAYER_FALLING)
@@ -981,8 +981,8 @@ void Player::OnCollisionEnter(Collider* c1, Collider* c2)
 
 	case COLLIDER_GROUND:
 	{
-
-		LOG("ENTRO SUELO");
+		//LOG("ENTRO SUELO");
+		
 	}
 	break;
 
@@ -995,6 +995,18 @@ void Player::OnCollisionEnter(Collider* c1, Collider* c2)
 
 void Player::OnCollisionExit(Collider* c1, Collider* c2)
 {
-	LOG("%i", c1->type);
-	LOG("%i", c2->type);
+	switch (c2->type)
+	{
+
+	case COLLIDER_GROUND:
+	{
+
+		//LOG("SALGO SUELO");
+	}
+	break;
+
+	default:
+
+		break;
+	}
 }

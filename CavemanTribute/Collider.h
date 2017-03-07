@@ -33,8 +33,6 @@ public:
 	COLLIDER_TYPE type;
 	Module* callback;
 	bool active;
-	bool launchable;
-	bool rolling;
 
 	Collider(SDL_Rect rectangle, COLLIDER_TYPE typeof, Module* callbackM = nullptr);
 	~Collider();
@@ -45,6 +43,7 @@ public:
 
 	bool addNewCollider(Collider* c);
 	bool removeCollider(Collider* c);
+	bool existInColliding(Collider* c);
 
 	list<Collider*> colliding;
 };

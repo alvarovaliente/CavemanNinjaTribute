@@ -32,8 +32,38 @@ bool const Collider::CheckCollision(SDL_Rect r) const
 		rect.h + rect.y > r.y);
 }
 
+bool Collider::existInColliding(Collider* c)
+{
+	if (colliding.size() > 0)
+	{
+
+	
+		for (list<Collider*>::iterator it = colliding.begin(); it != colliding.end();)
+		{
+			if (*it == c)
+			{
+				return true;
+			}
+			else
+				++it;
+		}
+	}
+
+	return false;
+}
+
 bool Collider::addNewCollider(Collider * c)
 {
+
+	/*if (!existInColliding(c))
+	{
+		colliding.push_back(c);
+		return true;
+	}
+	else
+	{
+		return false;
+	}*/
 
 	for (list<Collider*>::iterator it = colliding.begin(); it != colliding.end();)
 	{
@@ -41,23 +71,31 @@ bool Collider::addNewCollider(Collider * c)
 		{
 			return false;
 		}
+		else
+			++it;
 	}
 	
 	colliding.push_back(c);
+
 	return true;
 }
 
 bool Collider::removeCollider(Collider* c)
 {
-	for (list<Collider*>::iterator it = colliding.begin(); it != colliding.end();)
-	{
-		if (*it == c)
+	if (colliding.size() > 0)
+	{ 
+		for (list<Collider*>::iterator it = colliding.begin(); it != colliding.end();)
 		{
-			//RELEASE(*it);
-			//it = colliding.erase(it);
-			return true;
+			if (*it == c)
+			{
+			
+				//colliding.remove(*it);
+				colliding.erase(it);
+				return true;
+			}
+			else
+				++it;
 		}
 	}
-
 	return false;
 }

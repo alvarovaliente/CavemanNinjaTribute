@@ -20,6 +20,8 @@ public:
 	bool CleanUp();
 	void createParticle(infoParticle info, PARTICLE_TYPE type, COLLIDER_TYPE collider_type);
 	void OnCollision(Collider* c1, Collider* c2);
+	void OnCollisionEnter(Collider* c1, Collider* c2);
+	void OnCollisionExit(Collider* c1, Collider* c2);
 
 
 private:

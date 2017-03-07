@@ -56,7 +56,7 @@ update_status StoneAxe::Update()
 
 			if (timeGoingUp.isStarted() && timeGoingUp.getTicks() <= 300)
 			{
-				LOG("UP");
+				//LOG("UP");
 				position.x += 0;
 				position.y -= speed.y;
 			}
@@ -67,13 +67,13 @@ update_status StoneAxe::Update()
 			if (timeGoingUp.isStarted() && timeGoingUp.getTicks() <= 200)
 			{
 				if (direction == SHOOTRIGHT){
-					LOG("RIGHT");
+					//LOG("RIGHT");
 					position.x += speed.x;
 					position.y -= speed.y;
 				}
 				else if (direction == SHOOTLEFT)
 				{
-					LOG("LEFT");
+					//LOG("LEFT");
 					position.x -= speed.x;
 					position.y -= speed.y;
 
@@ -120,10 +120,10 @@ update_status StoneAxe::Update()
 		}
 
 	
-
+		
 		App->renderer->Blit(texture, position.x, position.y, &(anim.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
 
-
+	
 	}
 
 	return UPDATE_CONTINUE;
@@ -136,7 +136,20 @@ bool const StoneAxe::isDead()
 
 void StoneAxe::OnCollision(Collider* c1, Collider* c2)
 {
+	switch (c2->type)
+	{
+	case COLLIDER_GROUND:
+	{
+		//LOG("ESTOY EN SUELO");
+		//dead = true;
+		//collider->to_delete = true;
 
+	}
+
+
+	default:
+		break;
+	}
 }
 
 void StoneAxe::OnCollisionEnter(Collider* c1, Collider* c2)
@@ -145,21 +158,25 @@ void StoneAxe::OnCollisionEnter(Collider* c1, Collider* c2)
 	{
 	case COLLIDER_GROUND:
 	{
-		
+		//LOG("ENTRO SUELO");
 		dead = true;
 		collider->to_delete = true;
-		//timeToDie.start();
+	
 	}
+
+	break;
 
 	case COLLIDER_ENEMY:
 	{
-		
-
-		//timeToDie.start();
+		//LOG("ENTRO SUELO");
 		dead = true;
 		collider->to_delete = true;
+
 	}
+
 	break;
+
+	
 	default:
 		break;
 	}
@@ -167,5 +184,18 @@ void StoneAxe::OnCollisionEnter(Collider* c1, Collider* c2)
 
 void StoneAxe::OnCollisionExit(Collider* c1, Collider* c2)
 {
+	switch (c2->type)
+	{
+	case COLLIDER_GROUND:
+	{
+		//LOG("SALGO SUELO");
+		//dead = true;
+		//collider->to_delete = true;
 
+	}
+
+
+	default:
+		break;
+	}
 }

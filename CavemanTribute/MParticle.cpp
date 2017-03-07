@@ -35,13 +35,15 @@ bool MParticle::Start()
 
 update_status MParticle::Update()
 {
-	for (auto& it : particles)
-	{
-		if (it != nullptr)
+	if (particles.size() > 0){
+		for (auto& it : particles)
 		{
-			it->Update();
-		}
+			if (it != nullptr)
+			{
+				it->Update();
+			}
 
+		}
 	}
 
 
@@ -87,6 +89,34 @@ void MParticle::OnCollision(Collider* c1, Collider* c2)
 			if ((it)->collider == c1)
 			{
 				it->OnCollision(c1, c2);
+			}
+		}
+	}
+}
+
+void MParticle::OnCollisionEnter(Collider* c1, Collider* c2)
+{
+	for (auto& it : particles)
+	{
+		if (it != nullptr)
+		{
+			if ((it)->collider == c1)
+			{
+				it->OnCollisionEnter(c1, c2);
+			}
+		}
+	}
+}
+
+void MParticle::OnCollisionExit(Collider* c1, Collider* c2)
+{
+	for (auto& it : particles)
+	{
+		if (it != nullptr)
+		{
+			if ((it)->collider == c1)
+			{
+				it->OnCollisionExit(c1, c2);
 			}
 		}
 	}
