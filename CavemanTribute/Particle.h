@@ -23,7 +23,6 @@ struct infoParticle
 	bool dead;
 	Uint32 lifetime;
 	Animation anim;
-	Animation explo;
 	SDL_Texture* text;
 	int direction;
 };
@@ -42,7 +41,7 @@ public:
 	bool dead;
 	Timer time;
 	Uint32 lifetime;
-	Particle *link = nullptr;
+
 	Collider *collider = nullptr;
 
 	//methods
@@ -55,7 +54,6 @@ public:
 	virtual void OnCollision(Collider* c1, Collider* c2);
 	virtual void OnCollisionEnter(Collider* c1, Collider* c2);
 	virtual void OnCollisionExit(Collider* c1, Collider* c2);
-
 };
 
 #endif // __PARTICLE_H__

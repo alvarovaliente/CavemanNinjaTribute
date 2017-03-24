@@ -54,17 +54,6 @@ bool Collider::existInColliding(Collider* c)
 
 bool Collider::addNewCollider(Collider * c)
 {
-
-	/*if (!existInColliding(c))
-	{
-		colliding.push_back(c);
-		return true;
-	}
-	else
-	{
-		return false;
-	}*/
-
 	for (list<Collider*>::iterator it = colliding.begin(); it != colliding.end();)
 	{
 		if (*it == c)
@@ -88,8 +77,7 @@ bool Collider::removeCollider(Collider* c)
 		{
 			if (*it == c)
 			{
-			
-				//colliding.remove(*it);
+
 				colliding.erase(it);
 				return true;
 			}

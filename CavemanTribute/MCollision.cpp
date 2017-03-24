@@ -119,7 +119,7 @@ update_status MCollision::Update()
 				}
 
 			}
-			else //TODO: comprobar que ya no hace colision desde hace tiempo porque ahora llama siempre que no la hay (comprobar colliding, si esta dentro hay que borrarlo y llamar a exit, si no, no hacer nada)
+			else
 			{
 
 				if (c1->existInColliding(c2))

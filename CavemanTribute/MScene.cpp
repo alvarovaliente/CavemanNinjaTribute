@@ -103,9 +103,11 @@ bool MScene::Start()
 
 	infoGameObject inf;
 	//ENEMIES
-	inf.position = { 120, 188 };
+	inf.position = { 160, 184 };
 
 	App->FGameObject->createGameObject(inf, BASIC_ENEMY, COLLIDER_ENEMY);
+
+	
 
 	pause = false;
 	return true;
@@ -140,28 +142,28 @@ bool MScene::CleanUp()
 
 update_status MScene::Update()
 {
-		//SKY
-		App->renderer->Blit(sky, 0, 0,NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(sky, 256, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(sky, 512, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(sky, 768, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(sky, 1024, 0, NULL, SDL_FLIP_NONE);
+	//SKY
+	App->renderer->Blit(sky, 0, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(sky, 256, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(sky, 512, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(sky, 768, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(sky, 1024, 0, NULL, SDL_FLIP_NONE);
 
-		//MOUNTAINS
-		App->renderer->Blit(mountains, 0, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(mountains, 256, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(mountains, 513, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(mountains, 768, 0, NULL, SDL_FLIP_NONE);
-		App->renderer->Blit(mountains, 1024, 0, NULL, SDL_FLIP_NONE);
+	//MOUNTAINS
+	App->renderer->Blit(mountains, 0, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(mountains, 256, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(mountains, 513, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(mountains, 768, 0, NULL, SDL_FLIP_NONE);
+	App->renderer->Blit(mountains, 1024, 0, NULL, SDL_FLIP_NONE);
 
-		//TREES
-		App->renderer->Blit(trees, 0, 0, NULL, SDL_FLIP_NONE);
+	//TREES
+	App->renderer->Blit(trees, 0, 0, NULL, SDL_FLIP_NONE);
 
-		//LEVEL SPRITE
-		App->renderer->Blit(background, 0, 0, NULL, SDL_FLIP_NONE);
+	//LEVEL SPRITE
+	App->renderer->Blit(background, 0, 0, NULL, SDL_FLIP_NONE);
 
-		//FACE
-		App->renderer->Blit(facePlayer, facePlayerPos.x, facePlayerPos.y, &faceUInormal, SDL_FLIP_NONE);
+	//FACE
+	App->renderer->Blit(facePlayer, facePlayerPos.x, facePlayerPos.y, &faceUInormal, SDL_FLIP_NONE);
 
 		//LIFE
 		for (int i = 0; i < player->life.size();i++)

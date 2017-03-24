@@ -54,7 +54,7 @@ update_status MParticle::Update()
 update_status MParticle::PreUpdate()
 {
 
-	// Remove all colliders scheduled for deletion
+	// Remove all colliders scheduled for delete
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end();)
 	{
 		if ((*it)->dead == true)

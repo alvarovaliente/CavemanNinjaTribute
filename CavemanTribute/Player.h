@@ -84,6 +84,7 @@ public:
 	int gravity;
 	bool grounded;
 	bool jumping;
+	bool hitted;
 	
 
 	//timers
@@ -92,6 +93,7 @@ public:
 	Timer timeShoot;
 	Timer timeShootCrouch;
 	Timer timeShootLookUp;
+	Timer timeHitted;
 };
 
 

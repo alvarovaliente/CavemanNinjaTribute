@@ -20,6 +20,11 @@ public:
 	Animation() : frames(), speed(1.0f), current_frame(0.0f)
 	{}
 
+	int getActualFrameNumber()
+	{
+		return (int)current_frame;
+	}
+
 	SDL_Rect& GetCurrentFrame()
 	{
 		current_frame += speed;

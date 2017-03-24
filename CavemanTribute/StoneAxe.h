@@ -27,13 +27,11 @@ public:
 
 	//animation
 	Animation anim;
-	Animation explosion;
 
 	//graphics
 	SDL_Texture *texture;
 
 	//timers
-	Timer timeToDie;
 	Timer timeGoingUp;
 	Timer timeGoingDown;
 

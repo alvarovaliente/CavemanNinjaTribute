@@ -31,6 +31,8 @@ Player::Player()
 	grounded = false;
 	jumping = false;
 
+	hitted = false;
+
 
 	//Animations
 
@@ -154,6 +156,11 @@ update_status Player::PreUpdate()
 			//Main state machine loop
 			if (status != PLAYER_DYING)
 			{
+
+				if (hitted && timeHitted.isStarted() && timeHitted.getTicks() > 2000)
+				{
+					hitted = false;
+				}
 
 				if (status == PLAYER_IDLE)
 				{
@@ -983,6 +990,25 @@ void Player::OnCollisionEnter(Collider* c1, Collider* c2)
 	{
 		//LOG("ENTRO SUELO");
 		
+	}
+	break;
+
+	case COLLIDER_ENEMY:
+	{
+		
+		if (!hitted){
+			
+			actualLife -= 6;
+			
+			for (int i = life.size() - 1; i > actualLife; --i)
+			{
+				life[i] = 0;
+			}
+			hitted = true;
+			timeHitted.start();
+		}
+	
+
 	}
 	break;
 

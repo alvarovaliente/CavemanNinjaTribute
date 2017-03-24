@@ -27,12 +27,23 @@ BasicEnemy::BasicEnemy(infoGameObject info)
 	//idle.frames.push_back({ 436, 466, 26, 45 });
 	idle.speed = 0.1f;
 
-	//WALKING
-	walking.frames.push_back({42, 218, 33, 37});
-	walking.frames.push_back({ 174, 217, 27, 38 });
-	walking.frames.push_back({ 301, 218, 28, 37 });
-	walking.frames.push_back({ 429, 216, 28, 39 });
+	//RUNNING
+	running.frames.push_back({42, 218, 33, 37});
+	running.frames.push_back({ 174, 217, 27, 38 });
+	running.frames.push_back({ 301, 218, 28, 37 });
+	running.frames.push_back({ 429, 216, 28, 39 });
+	running.speed = 0.2f;
+
+	walking.frames.push_back({ 52, 82, 32, 45 });
+	walking.frames.push_back({ 177, 84, 35, 43 });
+	walking.frames.push_back({ 309, 82, 31, 45 });
+	walking.frames.push_back({ 434, 83, 34, 44 });
 	walking.speed = 0.1f;
+
+	attack.frames.push_back({ 53, 335, 33, 48 });
+	attack.frames.push_back({ 181, 312, 28, 71 });
+	attack.frames.push_back({ 278, 340, 54, 43 });
+	attack.speed = 0.1f;
 }
 
 BasicEnemy::~BasicEnemy()
@@ -51,6 +62,9 @@ bool BasicEnemy::Start()
 update_status BasicEnemy::PreUpdate()
 {
 	
+	
+	//LOG("Distance: %f", (App->FGameObject->returnPlayer()->position.x - position.x));
+
 	if (status == ENEMY_WALKING){
 
 		if (facingLeft)
@@ -61,6 +75,55 @@ update_status BasicEnemy::PreUpdate()
 		{
 			position.x += speed.x;
 		}
+
+		if (App->FGameObject->returnPlayer()->position.x - position.x > -80)
+		{
+			status = ENEMY_RUNNING;
+			previousStatus = ENEMY_WALKING;
+			speed.x = 1;
+			position.y += 5;
+
+		}
+
+
+
+	}
+
+	if (status == ENEMY_RUNNING){
+
+		if (facingLeft)
+		{
+			position.x -= speed.x;
+		}
+		else
+		{
+			position.x += speed.x;
+		}
+
+
+		if (App->FGameObject->returnPlayer()->position.x - position.x > -30)
+		{
+			status = ENEMY_ATTACK;
+			previousStatus = ENEMY_RUNNING;
+			speed.x = 0;
+			position.y -= 5;
+			timeAnimationAttack.start();
+
+		}
+		
+	}
+
+	if (status == ENEMY_ATTACK)
+	{
+		if (timeAnimationAttack.isStarted() && timeAnimationAttack.getTicks() > 420)
+		{
+			status = ENEMY_RUNNING;
+			previousStatus = ENEMY_ATTACK;
+			speed.x = 1;
+			position.y += 5;
+			facingLeft = !facingLeft;
+		}
+
 	}
 
 	return UPDATE_CONTINUE;
@@ -94,6 +157,43 @@ update_status BasicEnemy::Update()
 		else
 		{
 			App->renderer->Blit(graphicsEnemy, position.x, position.y, &(walking.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+		}
+		break;
+
+	case ENEMY_RUNNING:
+		if (facingLeft)
+		{
+			App->renderer->Blit(graphicsEnemy, position.x, position.y, &(running.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+		}
+		else
+		{
+			App->renderer->Blit(graphicsEnemy, position.x, position.y, &(running.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
+		}
+		break;
+
+	case ENEMY_ATTACK:
+		if (facingLeft)
+		{
+			if (attack.getActualFrameNumber() == 1)
+			{
+				App->renderer->Blit(graphicsEnemy, position.x, position.y-25, &(attack.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else if (attack.getActualFrameNumber() == 2)
+			{
+				this->colliderBody->to_delete = true;
+				this->colliderBody = App->FCollision->AddCollider({ this->position.x - 15, this->position.y, ENEMY_COLLIDER_BODY_WIDTH - 15, PLAYER_CROUCH_COLLIDER_BODY_HEIGHT }, COLLIDER_ENEMY, this);
+				App->renderer->Blit(graphicsEnemy, position.x - 15, position.y, &(attack.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+			else
+			{
+				App->renderer->Blit(graphicsEnemy, position.x, position.y, &(attack.GetCurrentFrame()), SDL_FLIP_NONE, 1.0f);
+			}
+
+			
+		}
+		else
+		{
+			App->renderer->Blit(graphicsEnemy, position.x, position.y, &(attack.GetCurrentFrame()), SDL_FLIP_HORIZONTAL, 1.0f);
 		}
 		break;
 
@@ -134,7 +234,7 @@ void BasicEnemy::OnCollisionEnter(Collider* c1, Collider* c2)
 
 	case COLLIDER_PLAYER:
 	{
-		facingLeft = !facingLeft;
+		//facingLeft = !facingLeft;
 	}
 	break;
 
