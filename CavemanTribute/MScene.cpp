@@ -94,6 +94,9 @@ bool MScene::Start()
 	App->FCollision->AddCollider({ 0, SCREEN_HEIGHT - 15, SCREEN_WIDTH * 5, 20 }, COLLIDER_GROUND, this);
 
 
+	//DINOSAUR GROUND
+	App->FCollision->AddCollider({ 0, 500, SCREEN_WIDTH * 5, 5 }, COLLIDER_GROUND, this);
+
 	//CAMERA MOVE COLLIDER
 	moveCameraCollider = App->FCollision->AddCollider({ SCREEN_WIDTH / 2, 0, 2, SCREEN_HEIGHT }, COLLIDER_MOVECAMERA, this);
 	
@@ -103,7 +106,7 @@ bool MScene::Start()
 
 	infoGameObject inf;
 	//ENEMIES
-	inf.position = { 160, 184 };
+	inf.position = { 200, 184 };
 
 	App->FGameObject->createGameObject(inf, BASIC_ENEMY, COLLIDER_ENEMY);
 
@@ -122,6 +125,8 @@ void MScene::moveUI()
 	lifePlayerPos.x += 1;
 
 }
+
+
 
 
 

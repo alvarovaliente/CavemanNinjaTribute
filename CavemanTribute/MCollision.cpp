@@ -37,6 +37,7 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_PLAYER][COLLIDER_PLAYER] = false;
 	matrix[COLLIDER_PLAYER][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_PLAYER][COLLIDER_MOVECAMERA] = true;
+	matrix[COLLIDER_PLAYER][COLLIDER_PICKUPFOOD] = true;
 
 
 	matrix[COLLIDER_ENEMY][COLLIDER_GROUND] = true;
@@ -48,6 +49,10 @@ MCollision::MCollision() : Module()
 	matrix[COLLIDER_STONEAXE][COLLIDER_ENEMY] = true;
 	matrix[COLLIDER_STONEAXE][COLLIDER_STONEAXE] = false;
 	matrix[COLLIDER_STONEAXE][COLLIDER_PLAYER] = false;
+
+
+	matrix[COLLIDER_PICKUPFOOD][COLLIDER_PICKUPFOOD] = false;
+	matrix[COLLIDER_PICKUPFOOD][COLLIDER_PLAYER] = true;
 	
 
 }
@@ -192,6 +197,10 @@ update_status MCollision::PostUpdate()
 			case COLLIDER_STONEAXE:
 				App->renderer->DrawQuad(col->rect, 0, 255, 0, alpha);
 				break;
+
+			case COLLIDER_PICKUPFOOD:
+				App->renderer->DrawQuad(col->rect, 0, 255, 0, alpha);
+				break;
 			}
 		}
 	}
@@ -211,9 +220,11 @@ bool MCollision::CleanUp()
 	return true;
 }
 
-Collider* MCollision::AddCollider(SDL_Rect rect, COLLIDER_TYPE type, Module* callback)
+Collider* MCollision::AddCollider(SDL_Rect rect, COLLIDER_TYPE type, Module* callback, Particle * particle, GameObject* gameObject)
 {
 	Collider* ret = new Collider(rect, type, callback);
+	ret->particle = particle;
+	ret->gameObject = gameObject;
 	colliders.push_back(ret);
 	return ret;
 }

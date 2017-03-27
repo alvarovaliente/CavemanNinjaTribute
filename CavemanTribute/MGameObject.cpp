@@ -226,7 +226,7 @@ void MGameObject::createGameObject(infoGameObject info, GAMEOBJECT_TYPE type, CO
 
 		if (collider_type != COLLIDER_NONE)
 		{
-			enemy->colliderBody = App->FCollision->AddCollider({ enemy->position.x, enemy->position.y, ENEMY_COLLIDER_BODY_WIDTH, ENEMY_COLLIDER_BODY_HEIGHT }, COLLIDER_ENEMY, this);
+			enemy->colliderBody = App->FCollision->AddCollider({ enemy->position.x, enemy->position.y, ENEMY_COLLIDER_BODY_WIDTH_WALKING, ENEMY_COLLIDER_BODY_HEIGHT_WALKING }, COLLIDER_ENEMY, this);
 		}
 
 		enemy->Start();

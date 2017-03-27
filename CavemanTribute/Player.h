@@ -8,6 +8,7 @@
 #include "MGameObject.h"
 #include "Timer.h"
 #include "Module.h"
+#include "PickUpFood.h"
 
 enum PLAYER_STATUS
 {
@@ -40,6 +41,7 @@ public:
 	void OnCollision(Collider* c1, Collider* c2);
 	void OnCollisionEnter(Collider* c1, Collider* c2);
 	void OnCollisionExit(Collider* c1, Collider* c2);
+
 
 	//Behaviour methods
 	update_status walkingRightF();
@@ -94,6 +96,7 @@ public:
 	Timer timeShootCrouch;
 	Timer timeShootLookUp;
 	Timer timeHitted;
+	Timer timeHungry;
 };
 
 

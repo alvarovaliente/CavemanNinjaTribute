@@ -33,6 +33,8 @@ Player::Player()
 
 	hitted = false;
 
+	
+
 
 	//Animations
 
@@ -143,6 +145,7 @@ bool Player::Start()
 	timeJump.stop();
 	timeDoubleJump.stop();
 	timeShoot.stop();
+	timeHungry.start();
 
 	return true;
 }
@@ -156,6 +159,19 @@ update_status Player::PreUpdate()
 			//Main state machine loop
 			if (status != PLAYER_DYING)
 			{
+
+				if (timeHungry.isStarted() && timeHungry.getTicks() > 5000)
+				{
+					actualLife -= 1;
+
+					for (int i = life.size() - 1; i > actualLife; --i)
+					{
+						life[i] = 0;
+					}
+
+					timeHungry.stop();
+					timeHungry.start();
+				}
 
 				if (hitted && timeHitted.isStarted() && timeHitted.getTicks() > 2000)
 				{
@@ -981,6 +997,8 @@ void Player::OnCollision(Collider* c1, Collider* c2)
 	}
 }
 
+
+
 void Player::OnCollisionEnter(Collider* c1, Collider* c2)
 {
 	switch (c2->type)
@@ -999,16 +1017,32 @@ void Player::OnCollisionEnter(Collider* c1, Collider* c2)
 		if (!hitted){
 			
 			actualLife -= 6;
-			
 			for (int i = life.size() - 1; i > actualLife; --i)
 			{
 				life[i] = 0;
 			}
+
 			hitted = true;
 			timeHitted.start();
 		}
 	
 
+	}
+	break;
+
+	case COLLIDER_PICKUPFOOD:
+	{
+		PickUpFood *food = dynamic_cast<PickUpFood*>(c2->particle);
+
+		for (int i = actualLife; i < (actualLife + food->lifeRestore); ++i)
+		{
+			life[i] = 1;
+		}
+
+		actualLife += 3;
+
+		food->die();
+		
 	}
 	break;
 

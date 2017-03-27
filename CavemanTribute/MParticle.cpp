@@ -5,6 +5,8 @@
 #include "SDL/include/SDL.h"
 #include "Point.h"
 #include "StoneAxe.h"
+#include "PickUpFood.h"
+#include "Particle.h"
 
 
 
@@ -35,6 +37,9 @@ bool MParticle::Start()
 
 update_status MParticle::Update()
 {
+
+	
+
 	if (particles.size() > 0){
 		for (auto& it : particles)
 		{
@@ -138,6 +143,20 @@ void MParticle::createParticle(infoParticle info, PARTICLE_TYPE type, COLLIDER_T
 		}
 
 		particles.push_back(axe);
+	}
+	break;
+
+	case PARTICLE_PICKUPFOOD:
+	{
+		PickUpFood *food = new PickUpFood(info,APPLE); //TO DO: random food
+		
+
+		if (collider_type != COLLIDER_NONE)
+		{
+			food->collider = App->FCollision->AddCollider({ food->position.x, food->position.y, PICKUPFOOD_COLLIDER_BODY_WIDTH, PICKUPFOOD_COLLIDER_BODY_WIDTH }, collider_type, this, dynamic_cast<Particle*>(food));
+		}
+
+		particles.push_back(food);
 	}
 	break;
 	

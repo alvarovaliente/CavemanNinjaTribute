@@ -40,4 +40,4 @@ public:
 
 };
 
-#endif // __SOFTSHOT_H__
+#endif // __STONEAXE_H__

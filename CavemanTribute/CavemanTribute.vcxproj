@@ -85,6 +85,7 @@
     <ClInclude Include="MTextures.h" />
     <ClInclude Include="MWindow.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="PickUpFood.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="StoneAxe.h" />
@@ -110,6 +111,7 @@
     <ClCompile Include="MTextures.cpp" />
     <ClCompile Include="MWindow.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="PickUpFood.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="StoneAxe.cpp" />
     <ClCompile Include="Timer.cpp" />

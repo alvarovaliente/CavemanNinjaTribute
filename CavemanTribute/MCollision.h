@@ -19,7 +19,7 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	Collider* AddCollider(SDL_Rect rect, COLLIDER_TYPE type, Module* callback = NULL);
+	Collider* AddCollider(SDL_Rect rect, COLLIDER_TYPE type, Module* callback = NULL, Particle* particle = NULL ,GameObject* gameObject = NULL);
 
 private:
 
