@@ -1039,7 +1039,7 @@ void Player::OnCollisionEnter(Collider* c1, Collider* c2)
 			life[i] = 1;
 		}
 
-		actualLife += 3;
+		actualLife += food->lifeRestore;
 
 		food->die();
 		
